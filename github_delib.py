@@ -3,10 +3,12 @@ __Project__= 'GitHub Deliberations Data Extraction Module'
 
 from urllib2 import urlopen
 import json
-import re
+import sys
+import re,codecs
 from datetime import datetime
 import time
 from pprint import pprint
+
 
 #ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ
 ISO8601 = "%Y-%m-%dT %H:%M:%SZ"
@@ -48,33 +50,70 @@ def getContributors(main_url):
     details.close()
     return
 
-def getPullRequestsList(main_url):
-    #GET /repos/:owner/:repo/pulls
-    url = main_url + '/pulls?access_token={0}'.format(github_token)
+def getIssuesList(main_url, state='open'):
+    """
+    Imp Note: all pull-requests are "issues" - some are closed/merged and some are still open. 
+    When you query pull-requests from api, we get only "open" pull-reuests
+    The ideal way would be to get the closed pull-requests from "issues". 
+    
+    Therefore, I am re-writing the code to get issues. 
+    Prabha - Nov14,2013
+    
+    
+    How to get comments from issues:
+    *************************
+    Issue: https://github.com/GeoNode/geonode/issues/1263
+    
+    This is the issue: https://api.github.com/repos/GeoNode/geonode/issues/1263
+    It has 2 comments: 
+    comments url:    https://api.github.com/repos/GeoNode/geonode/issues/1263/comments
+    
+    Every issue will have its own body/text and each comment will have its own body/text
+    """        
+    #GET /repos/:owner/:repo/issues
+    
+    #url = main_url + '/issues?access_token={0}'.format(github_token)
+    url = main_url + '/issues?access_token={0}&state={1}'.format(github_token,state)
+    
     print url  
     
-    
     data = getPagedRequest(url)
-    pulls_file = open("pull_requests.tsv", 'w')
+    fname1 = "issues_all_" +state +".tsv"
+    fname2 = "issues_conversation_urls_" +state + ".tsv"
+    fname3 = "issues_text_" +state + ".tsv"
+    
+    issues_all = codecs.open(fname1, 'w',  "UTF-8") 
+    issues_conversation_urls = codecs.open(fname2, 'w',  "UTF-8") 
+    issues_text = codecs.open(fname3, 'w',  "UTF-8") 
+    
+    
     pulls ={}
     print len(data)
     for pull in data:
-        pull_num = pull["number"]
-        pull_state = pull["state"]        
-        pull_title = pull["title"]
-        pull_url = pull["url"]
-        text = pull["body"]
-        pull_created_at = pull["created_at"]
-        pull_closed_at = pull["closed_at"]
-        pull_merged_at = pull["merged_at"]
-        
-        print pull_num
-        pulls_file.write( str(pull_num)+"\t" + str(pull_state)+"\t" +str(pull_title )+"\t" + str(pull_url)+"\t" + str(pull_created_at)+"\t" + str(pull_closed_at) + "\t"+str(pull_merged_at)+"\n")
-        
-        #pulls_file.write(str(user["author"]["login"])+"\t" + str(user["author"]["id"]) +"\t"+ str(user["author"]["url"]) + "\t" + str(user["total"]) + "\n")
-    pulls_file.close()
+        try:
+            pull_num = pull["number"]
+            pull_state = pull["state"]        
+            pull_title = pull["title"]
+            pull_url = pull["url"]
+            text = pull["body"]
+            comments_num = pull["comments"]
+            comments_url = pull["comments_url"]
+            pull_created_at = pull["created_at"]
+            pull_closed_at = pull["closed_at"]
+            
+            print pull_num
+            issues_all.write(str(pull_num)+"\t" + str(pull_state)+"\t" +str(text)+"\t" + str(pull_url)+"\t"  +str(comments_num)+"\t" +str(comments_url)+"\t"+ str(pull_created_at)+"\t" + str(pull_closed_at) +"\n")
+            issues_conversation_urls.write(
+                 str(pull_num)+"\t" + str(pull_state)+"\t"+str(comments_num)+"\t" +str(comments_url) +"\n" )
+            issues_text.write( str(pull_num)+"\t" +str(text)+ "\n" )
+        except Exception, e:        
+            print "Error : ", e        
+                        
+    issues_all.close()
+    issues_conversation_urls.close()
+    issues_text.close()
 
-def getPullRequestComments(main_url):
+def getIssuesConversations(main_url):
     print github_token
     #GET /repos/:owner/:repo/pulls/comments
     url = main_url + '/pulls/comments?access_token={0}'.format(github_token)
@@ -95,11 +134,6 @@ def getPullRequestComments(main_url):
         
     
     
-    
-
-def getIssues( main_url, state='all'):
-    url = main_url + '/issues?access_token={0}&state={1}'.format(github_token,state)
-    return getPagedRequest(url)
 
 def getIssueComments( main_url, issue_id):
     # GET /repos/:owner/:repo/issues/:number/comments
@@ -155,10 +189,22 @@ def getPagedRequest(url):
 if __name__ == '__main__':
     project = "bitcoin"
     repo = "bitcoin"
+    
+    #project = "geonode"
+    #repo = "geonode"      
     main_url = "https://api.github.com/repos/"+ project+"/"+repo
     print main_url
     #getContributors(main_url)
     #getCoreCollaborators(main_url)
     #print getCommits(main_url)
-    getPullRequestsList(main_url)
+    
+    """
+    get issue details and the conversation urls
+    """
+    getIssuesList(main_url,"open")
+    getIssuesList(main_url,'closed')
+    
+    """
+    get individual comments of each conversation of each issue
+    """    
 
