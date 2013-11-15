@@ -1,0 +1,366 @@
+3255	open	[Qt] make most Windows appear centered on main GUI	- remove default value for parent variable in dialogs, which should appear
+  centered over main GUI and pass appropriate value
+- add some addition NULL pointer checks	https://api.github.com/repos/bitcoin/bitcoin/pulls/3255	2013-11-14T18:56:30Z	None
+3254	open	[Qt] misc PaymentServer changes (e.g. changes to eventFilter())	- make eventFilter() private and pass events on to QObject::eventFilter()
+  instead of just returning false
+- delete socket when we were unable to connect in ipcSendCommandLine()
+- show a message to the user if we fail to start-up (instead of just a
+  debug.log entry)
+- misc small comment changes	https://api.github.com/repos/bitcoin/bitcoin/pulls/3254	2013-11-14T18:24:56Z	None
+3253	open	Coin control by cozz (rebased)	Rebased version of Coin Control #2343 (all changes were trivial; biggest conflicts were `uint64`->`uint64_t` and the header refactor)
+	https://api.github.com/repos/bitcoin/bitcoin/pulls/3253	2013-11-14T14:14:23Z	None
+3252	open	qt: language update from transifex	Adds three new languages:
+
+- de_AT: German (Austria)
+- gl: Galician
+- sl_SI: Slovenian (Slovenia)
+
+Updates many others.
+
+Thanks to the translators contributing on Transifex!	https://api.github.com/repos/bitcoin/bitcoin/pulls/3252	2013-11-14T14:01:09Z	None
+3248	open	qt: align amounts on overview page to the right	This is more consistent with other places in the GUI.
+
+![overviewalignright](https://f.cloud.github.com/assets/126646/1539303/35e0bb78-4d06-11e3-8cad-d6eeff582cf8.png)
+	https://api.github.com/repos/bitcoin/bitcoin/pulls/3248	2013-11-14T08:25:21Z	None
+3247	open	core: remove includes in .cpp, if header is already in .h	- example: if util.h includes stdint.h, remove it from util.cpp, as
+  util.h is the first header included in util.cpp	https://api.github.com/repos/bitcoin/bitcoin/pulls/3247	2013-11-13T16:44:12Z	None
+3242	open	Autoconf improvements, part 3		https://api.github.com/repos/bitcoin/bitcoin/pulls/3242	2013-11-12T21:02:41Z	None
+3239	open	Add verbose flag to getrawmempool	This is the first half of the smart fee rework.
+
+Three commits; the first two are clean-up refactors.
+The third adds an optional boolean 'verbose' flag to getrawmempool, and reworks the memory pool to store CTxMemPoolEntrys instead of CTransactions.
+
+Output of 'getrawmempool true' is an Object, with transaction id keys:
+```
+    "f5f67700586e435a8634f6235783936cb015a11115f2d379fb987e34d21d58bd" : {
+        "size" : 223,
+        "fee" : 50000,
+        "time" : 1384221652,
+        "height" : 269117,
+        "startingpriority" : 0.00000000,
+        "currentpriority" : 313.90134529,
+        "dependson" : [
+            "6fcad339f1a613594e9e9f877772a6c3896493ea7babf286a054421190761efa"
+        ]
+    },
+```
+
+EDITED: store/report timestamp when the transaction entered the pool.
+
+Shed-painting on whether this should return an Array of Objects (with "txid" one of the keys) instead of an Object welcome, as are suggestions for key names (e.g. prefer 'startingpriority' or 'prioritystart').
+
+	https://api.github.com/repos/bitcoin/bitcoin/pulls/3239	2013-11-12T01:14:08Z	None
+3234	open	Remove Wallet Tools	We already have the exact same funtionality in /contrib/bitrpc/bitrpc.py
+
+If we really do need standalone scripts, then I'll write something to
+pull it from that file, rather than having duplicate code.	https://api.github.com/repos/bitcoin/bitcoin/pulls/3234	2013-11-11T13:49:35Z	None
+3229	open	Require configuration of mining before creating blocks	As discussed on IRC, this removes the "defaults" miners often use as an excuse to not make mining decisions.
+getblocktemplate is disabled unless bitcoind is explicitly configured with mining settings.	https://api.github.com/repos/bitcoin/bitcoin/pulls/3229	2013-11-10T23:37:21Z	None
+3207	open	qt: keep a list of requested payments	Continuation of work in #3099.
+
+Keep a list of requested payments in the Receive tab so that a user can recall previously created receive requests after closing their windows.
+
+Currently this list is not stored between bitcoin-qt sessions. This can be implemented later, but it is not clear here it should be stored as I don't think it belongs in the wallet (maybe in QSettings?) at least until it is really associated with a transaction.
+
+![recently_requested](https://f.cloud.github.com/assets/126646/1475793/dc78e68a-4640-11e3-812b-3f39978099c4.png)	https://api.github.com/repos/bitcoin/bitcoin/pulls/3207	2013-11-05T17:38:24Z	None
+3178	open	rpcwallet: use EnsureWalletIsUnlocked() where possible	- replaces a pwalletMain->IsLocked() check
+- in keypoolrefill init kpSize to 0 as we have the logic to determine max
+  kpSize in pwalletMain->TopUpKeyPool() anyway	https://api.github.com/repos/bitcoin/bitcoin/pulls/3178	2013-10-28T12:02:08Z	None
+3157	open	[Qt] addressbookpage: make addressbookpage use message() / remove optionsmodel	Related to #3159 and #3160 (same changes for transactionview and walletview).
+
+Goal: Harmonize user experience for export of addresses, transactions and backup of the wallet!
+
+![export_addr](https://f.cloud.github.com/assets/1419649/1414006/c2433602-3e62-11e3-8743-bbb0f3ad0599.png)	https://api.github.com/repos/bitcoin/bitcoin/pulls/3157	2013-10-26T16:59:20Z	None
+3147	open	Autoconf improvements, part 2		https://api.github.com/repos/bitcoin/bitcoin/pulls/3147	2013-10-24T22:02:20Z	None
+3088	open	[net] Don't use third-party "what is my IP" services.	This patch eliminates the privacy and reliability problematic use
+of centralized web services for discovering the node's addresses
+for advertisement.
+
+The Bitcoin protocol already allows your peers to tell you what
+IP they think you have, but this data isn't trustworthy since
+they could lie. So the challenge is using it without creating a
+DOS vector.
+
+To accomplish this we adopt an approach similar to the one used
+by P2Pool:  If we're announcing and don't have a better address
+discovered (e.g. via UPNP) or configured we just announce to
+each peer the address that peer told us.  Since peers could
+already replace, forge, or drop our address messages this cannot
+create a new vulnerability... but if even one of our peers is
+giving us a good address we'll eventually make a useful
+advertisement.	https://api.github.com/repos/bitcoin/bitcoin/pulls/3088	2013-10-13T22:45:20Z	None
+3025	open	Make signatures with non-canonical data pushes non-standard.	This fixes another malleability problem.	https://api.github.com/repos/bitcoin/bitcoin/pulls/3025	2013-09-23T21:55:31Z	None
+3005	open	gui: fix non-sticking proxy setting	Addresses the last (I believe) work-item in https://github.com/bitcoin/bitcoin/issues/2371.
+
+I'm unsure of the correct fix here, but I hope this can at least get some discussion going. This change at least fixes the problem on the surface. Here's the summary as I see it:
+
+There's a mix of current-proxy-setting and saved-proxy-setting logic. Assuming the proxy is currently enabled: User unchecks the proxy checkbox, hits apply, the dialog checks to see what the new proxy setting should be, GetProxy() returns true because it's currently enabled, check remains in the checkbox, user is confused.
+
+Logically (to me) it makes sense to be checking the setting rather than the current runtime values, as the setting should reflect what user sees on next restart. But there are plenty of other GetProxy()/SetProxy() calls, so I'm inclined not to trust that line of reasoning.	https://api.github.com/repos/bitcoin/bitcoin/pulls/3005	2013-09-17T01:00:23Z	None
+2975	open	RPC: createrawtransactions gains 'fee' pseudo-address for fee safety	Suggested by gmaxwell.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2975	2013-09-04T17:33:44Z	None
+2966	open	Remove vtxPrev from CWalletTx	vtxPrev was intended to make it possible to broadcast supporting transactions.
+
+For various reasons it doesn't actually accomplish this goal while still consuming a sizable amount of space in the wallet.
+
+I've removed most references to vtxPrev and replaced them with procedures that pull transactions from mapWallet.
+
+As a side effect this code includes similar performance improvements to CWalletTx::IsConfirmed as https://github.com/bitcoin/bitcoin/pull/2952	https://api.github.com/repos/bitcoin/bitcoin/pulls/2966	2013-09-01T13:26:41Z	None
+2964	open	Headers-based synchronization and parallel block download	(see individual commits, in particular "Switch to headers-based synchronization", for detailed explanation of the changes).
+
+This implements headers-based synchronization and parallel block download. Summary of the changes:
+* Use `getheaders` instead of `getblocks` based synchronization, so that the best block in the chain is always known before actually downloading it. No more orphan blocks, ever.
+* Use a moving-window based block downloading mechanism (the heuristics are simple and behave badly for very small blocks, but except for the very beginning of the chain, it works very well).
+* Allow blocks to be stored out-of-order in the block database files.
+* Reorganize the block connection logic significantly.
+* Add a `getblockheader` RPC command.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2964	2013-08-31T20:47:14Z	None
+2910	open	Don't store or send blocks forked before last checkpoint.	This is a proposed solution for the "Fingerprint via weak-chain block submission" issue (#2757).
+
+Before storing a block, a check is done to see if it is at a height lower than last checkpoint.  If so, it is not stored.  (By definition, last checkpoint implies we have the whole chain up until last checkpoint, so we do not need to store any new blocks at those heights).
+
+A similar check is done before serving a request for a block at a pre-checkpoint height.  If it's not in the main chain, it could be a fingerprint block.  There is no point serving this block to anyone as it is a fork from the checkpointed chain, so the request is dropped.
+
+Although fingerprinting would be possible by generating a block higher than last checkpoint, it would be economically prohibitive to do so.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2910	2013-08-19T13:17:59Z	None
+2906	open	Added new RPC method for explicitly banning nodes or removing a ban.	Makes it possible to test nodes against bitcoind and to test bitcoind's misbehavior detection without having to constantly restart bitcoind.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2906	2013-08-17T20:34:09Z	None
+2900	open	Add NODE_BLOOM service bit and bump protocol version	Lets nodes advertise that they offer bloom filter support explicitly.
+The protocol version bump allows SPV nodes to assume that NODE_BLOOM is
+set if NODE_NETWORK is set for pre-70002 nodes.
+
+Also adds an undocumented option to turn bloom filter support off and
+immediately kick peers that attempt to use bloom filters for testing
+purposes. In addition a number of DoS attacks are made significantly
+easier by bloom support, so having an option makes it easy to take
+immediate steps in the event of an attack.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2900	2013-08-15T14:44:08Z	None
+2861	open	Add support for watch-only addresses	A rebased and modified version of #2121. Changes:
+* Support P2SH addresses, so listunspent/signrawtransaction can be used without having all keys for M-of-N multisig.
+* Add a fRequireSpendable flag to script's matching routines, so watch-only addresses can be avoided. This is used in SelectCoins (CreateTransaction would fail to sign them anyway).
+* Different storage format in database, which supports P2SH too.
+	https://api.github.com/repos/bitcoin/bitcoin/pulls/2861	2013-07-25T23:11:57Z	None
+2844	open	Add unauthenticated HTTP REST interface	The beginnings of a block explorer-style API for bitcoind.
+
+Supported API;
+
+1) GET /rest/tx/TX-HASH.{dat | txt | json}
+
+Given a transaction hash,
+Returns a transaction, in binary, hex-encoded binary or JSON formats.
+
+2) GET /rest/block/BLOCK-HASH.{dat | txt | json}
+
+Given a block hash,
+Returns a block, in binary, hex-encoded binary or JSON formats.
+
+Select format by appending a ".json" (JSON) or ".txt" (hex-encoded binary serialization) or ".dat" (binary serialization) suffix to the URL.
+```
+	GET /rest/block/BLOCK-HASH.dat
+	GET /rest/tx/TX-HASH.txt
+	GET /rest/tx/TX-HASH.json
+```
+The HTTP request and response are both handled entirely in-memory, thus making maximum memory usage at least 3MB (1 MB max block, plus hex encoding) per request.
+
+This can be easily accessed via command line cURL/wget utilities.
+
+The general goal of the HTTP REST interface is to access unauthenticated, public blockchain information.  There is no plan to add wallet interfacing/manipulation via this API.
+
+For full TX query capability, one must enable the transaction index via "txindex=1" command line / configuration option.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2844	2013-07-22T19:35:03Z	None
+2841	open	Added new config option noautofillkeypool.	One of the most annoying things about trying to maintain wallet backups is the fact that every time you unlock a wallet the key pool gets automatically refilled, thus making any existing backups of the wallet keys obsolete. If you call getnewaddress on a locked wallet, no problem - but the moment you unlock it, your wallet backups are out of date...no warning is given to user. Sooner or later that backed up wallet will expire, by which time we better hope the user had the foresight, understanding, discipline, and memory to have made a new backup.
+
+As things currently stand, the user must either keep track of when the backed up keypool is exhausted and remember to make a backup before the new keys are used - or must make a backup after every few transactions to be certain the backed up keypool is never exhausted. And let's be honest about it - very few users do either of these things. They are tedious and annoying. I only do them because they're far less tedious or annoying than attempting to recover lost keys.
+
+The user now has the choice to disable automatic refilling of the keypool by adding the following line to bitcoin.conf:
+
+noautofillkeypool=1
+
+This effectively disables all automatic key generation, requiring the user to manually run keypoolrefill to replenish the wallet when the key pool runs low or a new wallet is created.The keypoolrefill command has been conveniently exposed in the GUI as well. This ensures that all generated keys can be easily and conveniently backed up in a timely fashion, with confidence that the backup has been made properly and will never expire without warning (at least as far as keys - synchronizing history and account labels are separate issues that this pull request does not address).
+
+We probably shouldn't be allowing users to generate new keys without prompting them to make backups (or automatically making the backups for them); certainly not in the GUI and probably not in the RPC either (at least not without requiring an override flag or an additional call). It obviously makes more sense to do backups in batch rather than after every single new transaction; after all, that's exactly the purpose of pregenerating a key pool in the first place.  I believe hiding this from users only does them a disservice. Anyone who is smart enough to use Bitcoin-Qt should have no problem understanding how to do this - and anyone who is incapable of doing this probably shouldn't be managing their own bitcoin keys in the first place. EVERYONE should be making proper backups of their signing keys. Exposing a wallet backup function without also giving users control over their keypool is giving them a tool that requires two hands to use properly but tying one of their hands behind their back.
+
+This pull request simply makes the keypool feature which already exists properly usable. Having said that, with the expectation that some may disagree with my position, this new behavior is 100% opt-in -  if noautofillkeypool is not set in bitcoin.conf (or omitted), the app defaults to its old behavior thus ensuring full backward compatibility.
+
+![alt tag](http://blockhawk.net/screenshots/Bitcoin-Qt.png)
+View of Bitcoin-Qt interface with keypoolrefill feature exposed.
+
+TODO:
+- General: Automate backups when keypool runs low by, for instance, allowing the user to add one or more autobackupwallet=\<destination\> lines to the config file. The destination field should support protocols like sftp as well as removable media. Will require mechanism to prompt user or return an error if connection cannot be established, removable media is not present, or specified path is not found/invalid.
+
+- Bitcoin-Qt: Prompt user to refill pool when key pool is empty, prompt/remind user more aggressively to make backups, check key pool status before attempting operations that require new keys, add indicator to show how many keys are left in pool, add the ability to easily change the pool size from GUI, make it clear when errors are due to an empty key pool and show user proper procedure for refilling it and making a backup.
+
+- Bitcoin-Qt: Icon attribution for ![alt tag](https://github.com/CodeShark/bitcoin/diff_blob/6b18ba00d265f544dd457a83fac0c930ae51c66a/src/qt/res/icons/keypair.png?raw=true), taken from http://i1-win.softpedia-static.com/screenshots/32x32-Free-Design-Icons_1.png?1358761381	https://api.github.com/repos/bitcoin/bitcoin/pulls/2841	2013-07-21T04:53:19Z	None
+2839	open	Add block blacklisting RPC	This is a rebased version of a patch that mining.bitcoin.cz used during the march 11 2013 hardfork, to be able to continue using 0.8 while still mining the 0.7 chain.
+
+The reason for submitting it to mainline is:
+* When implementing this, I found that there were a few edge-cases in the reorganization handling, which are fixed here. They probably won't ever occur in normal operation, but I prefer the code to be robust.
+* For emergencies, having a blacklistblock RPC is certainly useful to have in the code, though I prefer not having it in normal releases. It's only enabled when compiling with ENABLE_BLOCK_BLACKLISTING. The RPC code is always compiled, so we can catch refactorings that would break it, though - just the index entry is not present normally.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2839	2013-07-20T11:20:48Z	None
+2834	open	getblocktemplate: longpolling support	Resubmission of #1355, since GitHub closed it on me.
+
+I have rebased it and addressed both of @jeremysawicki's concerns:
+- Shutdown now disconnects all longpoll sessions with an error.
+- Longpolling now mimicks the behaviour of BitcoinMiner by returning a new template after a minute has passed and there are new transactions.
+
+These changes were not exactly trivial, so re-review of the code is probably necessary.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2834	2013-07-17T02:24:08Z	None
+2784	open	Reduce keepalive ping/timeout	Ping automatically every 2 minutes (unconditionally), instead of of after 30 minutes of no sending, for latency measurement and keep-alive. Also, disconnect if no reply arrives within 5 minutes, instead of after 90 minutes of inactivity.
+
+This should make detection of stalled connections much faster.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2784	2013-06-22T17:17:37Z	None
+2612	open	Bitcoin-Qt: massive options/settings handling rework	- add new options for database cache and script verification threads
+- add new options for setting separate IPv6 and Tor proxy and show for
+  which networks the base proxy is used currently
+- add label which displays options that are overridden by command-line
+  parameters
+- proxy settings are not applied on-the-fly anymore and require a
+  client restart (ApplyProxySettings() was removed and was not working
+  very well anyway)
+- re-work options reset and require a client shutdown (as it is much
+  easier to do it this way without having to mess with what can be
+  changed on-the-fly and what needs a restart anyway)
+- options reset now writes default values for every single option
+- when changing an option which requires a client restart display a 10
+  second warning message in statusLabel (via a QTimer)
+- when applying the changes via ok change that to a persistent message,
+  which is displayed even after closing optionsdialog and re-open it,
+  when no client restart was made
+- remove dialog boxes used when changing language or proxy settings
+- add setRestartRequired() and isRestartRequired() to OptionsModel and
+  use the set function when updating options to signal OptionsDialog when
+  a restart is needed
+- resize optionsdialog a little and add some min sizes for certain GUI
+  elements
+- remove apply button from optionsdialog
+- save and restore optionsdialog window position
+- update nTransactionFee in QSettings with a set -paytxfee value when
+  opening optionsdialog (I'm not sure about this yet, perhaps revert
+  to not updating QSettings and just display current -paytxfee value in
+  optionsdialog.)	https://api.github.com/repos/bitcoin/bitcoin/pulls/2612	2013-05-03T10:56:50Z	None
+2575	open	extend core proxy options and handling	- rework the proxy handling in init to cover more cases and work more
+  thoroughly
+- add -proxy6 to allow setting a separate SOCKS5 proxy to reach IPv6 peers
+- add a hard-block for -tor to be able to remove compatibility code
+- rework proxy data-structures to allow recognition of the base proxy
+  (-proxy) to give users the ability to see, which proxy (IPv6 / Tor) is
+  derived from the base proxy and which was explicitly set
+- remove proxy info from RPC getinfo call
+- add new getproxyinfo RPC call
+
+Most proxy-setup is now done using the new ``ProxyInit()`` function.
+
+``ProxyInit(Network net, const std::string& strArg, int nSocksVersion, bool fIsBase)`` parameter description:
+``net`` = network to setup proxy for (NET_IPV4, NET_IPV6 or NET_TOR)
+``strArg`` = command-line argument to get values from (-proxy, -proxy6 or -onion)
+``nSocksVersion`` = SOCKS version of the proxy
+``fIsBase`` = is that proxy a base (true) or separate proxy (false)?
+
+``ProxyInit(Network net, const std::string& strArg, int nSocksVersion, bool fIsBase)`` does the following:
+-pre-check, if ``net`` is not limited and -no{proxy/proxy6/tor} was NOT specified
+--pre-check passed: try to ``SetProxy()`` and return ``false`` on error
+---pre-check passed: only for ``net == NET_TOR`` call ``SetReachable();``
+---pre-check passed: return ``true``
+--pre-check failed: for base proxy (``fIsBase == true``) a failed pre-check is okay, return ``true``, otherwise ``false``
+
+base proxy = ``-proxy``
+separate IPv6 proxy = ``-proxy6``
+separate Tor proxy = ``-onion``
+
+Proxy initialisation flow (happens via ``ProxyInit()``, just name proxy is special cased in the code):
+-try to setup base IPv4 proxy
+--if SOCKS4:
+---try to setup separate Tor proxy, on failure disable Tor via ``SetLimited()`` (SOCKS4 = no Tor support)
+---try to setup separate IPv6 proxy, on failure disable IPv6 via ``SetLimited()`` (SOCKS4 = no IPv6 support)
+--if SOCKS5
+---try to setup separate Tor proxy, on failure try to setup Tor proxy via base proxy
+---try to setup separate IPv6 proxy, on failure try to setup IPv6 proxy via base proxy
+---try to setup base SOCKS5 name proxy
+
+Errors initialising base proxy or Tor/IPv6 proxies via base proxy lead to exit!	https://api.github.com/repos/bitcoin/bitcoin/pulls/2575	2013-04-26T08:45:01Z	None
+2412	open	Network activity toggle	Allow the network activity of the client to be toggled temporarily.
+
+When network activity is disabled the client will close all connections, stop accepting inbound connections, and stop opening new outbound connections, until the network activity is reenabled. The first commit adds this feature to the core, accessed through SetNetworkActive().
+
+Second commit adds an RPC command "togglenetwork" to toggle on/off.
+
+Third commit adds further connections to the gui. When the network activity is disabled the status bar and the debug window will show this. In addition the commit adds a button to the debug window to toggle network activity.
+
+![bitcoin-network-activity](https://f.cloud.github.com/assets/420734/301091/75019bd4-95bd-11e2-91f2-c37c05891b31.png)
+
+Open issues:
+* Should the core close the listening socket or is it enough to just disregard incoming connections by closing them immediately?
+* Should SetNetworkActive() return an error code or can it throw exceptions?	https://api.github.com/repos/bitcoin/bitcoin/pulls/2412	2013-03-26T02:33:14Z	None
+2407	open	Added CWalletManager class to support loading of multiple wallets.	This pull request is a minimal step in the direction of merging https://github.com/bitcoin/bitcoin/pull/2124.
+
+The idea is to merge things incrementally rather than all at once.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2407	2013-03-24T02:50:04Z	None
+2342	open	Fix off-by-one errors in the interpretation of IsFinal()	Basically AcceptBlock() checks IsFinal() for transactions in a block with nHeight of the block being tested, or essentially nBestHeight+1 however CreateNewBlock() was using just nBestHeight, so transactions were being included into blocks one block later than they could be.
+
+Additionally the new IsFinal() test in IsStandard() had the same issue, as well as the UI. (ironically, a fix I wrote a few months ago, lead astray by simply watching to see when transactions got mined on testnet)
+
+The bug in CreateNewBlock() is especially nasty for fidelity bond sacrifice transactions, because a miner who knew the trick could collect all the fees for himself, one block before anyone else had a chance. (subject to hash power of course)
+
+Anyway, I should update the patch with unittests and investigate the issue more carefully; for instance, have there ever been any nLockTime'd transactions ever mined in the main chain at the minimum possible block? Also, can the same logic be fixed for time-locked transactions?	https://api.github.com/repos/bitcoin/bitcoin/pulls/2342	2013-03-04T10:22:01Z	None
+2340	open	Discourage fee sniping with nLockTime	Set nLockTime on wallet transactions (only, no RPC changes) such that they can only be mined by the next block, rather than a block orphaning the current best block. There are two reasons to do this, the first is the minor benefit that using nLockTime ensures related bugs get caught immediately, so protocols that need that feature don't become "unusual" transactions with flaky behavior.
+
+The more important reason is to discourage "fee sniping" by deliberately mining blocks that orphan the current best block. Basically for a large miner the value of the transactions in the best block and the mempool can exceed the cost of deliberately attempting to mine two blocks to orphan the best block. However with nLockTime you'll soon run out of transactions you can put in the first block, which means they now need to go in the second. With limited block sizes you're run out of room, and additionally another miner now only needs to orphan one block to in-turn snipe the high-fee transactions you had to place in the second block, wrecking all your hard work.
+    
+Of course, the subsidy is high enough, and transaction volume low enough, that fee sniping isn't a problem yet, but by implementing a fix now we ensure code won't be written that makes assumptions about nLockTime that preclude a fix later. Transaction propagation is not impacted; even with non-final is non-standard the best block height implies we have at least one peer, and very soon more peers, that will accept and rebroadcast the transaction immediately.
+
+## Testing
+
+### Unit tests
+
+Pass
+
+### Propagation
+
+No issues. Used -blocknotify='bitcoind sendtoaddress' to send transactions as soon as a few block is found with worst-case of a node connected to only two 0.8 peers. Enabled -logtimestamps w/ ntp on that node and another node, and every transaction got to the second node within 5 seconds.
+
+### Services
+
+No problems:
+
+Easywallet, Instawallet, Coinbase Wallet, Coinbase Merchant Services, Blockchain.info, BitPay, bitfetch, localbitcoins
+
+Won't accept until 1 confirmation:
+
+Satoshidice
+
+Most likely SatoshiDice implemented nLockTime == 0 rather than IsFinal() as their never-confirm nLockTime fix. I think there is an argument to be made that forcing them to make a minor change like this one would be a good way to test the waters to see if they'll make a more drastic change, as would be required if we make dust outputs non-standard.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2340	2013-03-01T11:09:14Z	None
+2124	open	Dynamically Loadable Multiple Wallet Support Complete!!!	bitcoind now supports loading more than one wallet at once.
+
+A singleton object of type CWalletManager now exists. It handles dynamic loading/unloading and synchronization of wallets and allows different parts of the application to access wallets by name.
+
+A new CWallet* parameter has been added to the RPC functions. Functions which do not use a wallet simply ignore it. In addition, a new field has been added to CRPCCommand that tells us whether or not the function can be called on a wallet.
+
+Wallet-specific information has been removed from RPC method getinfo. Instead, getinfo just reports how many
+wallets are currently loaded. Detailed wallet info is now available via the listwallets method.
+
+Four new RPC methods have been added:
+
+- listwallets
+Returns an array containing wallet information.
+
+- usewallet \<walletname\> \<method\> [params] 
+Allows you to apply existing RPC commands to different wallets.
+A default wallet named the empty string is always loaded and is used if calls are made without usewallet.
+Example: bitcoind usewallet foo listreceivedbyaddress 0 true
+(thanks, gmaxwell, for the idea)
+
+- loadwallet \<walletname\> [rescan=false] [upgradewallet=false] [maxversion=(latest)]
+Dynamically loads an existing wallet file wallet-\<walletname\>.dat.
+If no wallet file exists a new wallet is created. The default wallet file is always called wallet.dat.
+
+- unloadwallet \<walletname\>
+
+To specify additional wallets at startup, use option -usewallet=foo -usewallet=bar etc...as detailed here: https://github.com/bitcoin/bitcoin/pull/2124#issuecomment-11653964 and https://github.com/CodeShark/bitcoin/commit/9d201cfaf9f54042ec0ff8265cd2201545568b6d
+
+TODO:
+  - Clean up I/O in CWalletManager::LoadWallet - debug, error, and UI output functions.
+  - Check synchronization code.
+  - Test mining functionality. Allow RPC mining on arbitrary wallets.
+  - Integrate with Qt.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2124	2012-12-23T13:30:58Z	None
+1816	open	Support for specific BIP 22 rejection reasons and BIP 23 block proposal	This would aide greatly in ensuring miners aren't messing up blocks, without the expense of losing 50 BTC.	https://api.github.com/repos/bitcoin/bitcoin/pulls/1816	2012-09-10T02:57:58Z	None
+1674	open	enable full GCC Stack-smashing protection for all OSes	- change our hardening options to use -fstack-protector-all even for
+  Windows builds, as we recently switched to a newer compiler suite
+- also removes an obsolete workaround for GCC 4.5
+  (https://bugs.launchpad.net/ubuntu/+source/gcc-4.5/+bug/691722), which
+  required to first set -fno-stack-protector, before -fstack-protector-all	https://api.github.com/repos/bitcoin/bitcoin/pulls/1674	2012-08-14T09:48:18Z	None
+1647	open	CreateNewBlock: Child-pays-for-parent / Add transaction fee later	**Status: Passes unit tests, and seems to work**
+
+Consider parent transactions in the "cost" of child transactions until confirmed, and confirm them together
+
+This is the part of #1240 that @gavinandresen left out of #1590 since he felt it belonged in a separate commit/pullreq.	https://api.github.com/repos/bitcoin/bitcoin/pulls/1647	2012-08-01T22:43:58Z	None
+1583	open	JSON-RPC method: prioritisetransaction <txid> <priority delta>	Accepts the transaction into mined blocks at a higher (or lower) priority	https://api.github.com/repos/bitcoin/bitcoin/pulls/1583	2012-07-11T18:54:17Z	None

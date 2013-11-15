@@ -1,0 +1,40 @@
+3255	open	[Qt] make most Windows appear centered on main GUI	https://api.github.com/repos/bitcoin/bitcoin/pulls/3255	2013-11-14T18:56:30Z	None
+3254	open	[Qt] misc PaymentServer changes (e.g. changes to eventFilter())	https://api.github.com/repos/bitcoin/bitcoin/pulls/3254	2013-11-14T18:24:56Z	None
+3253	open	Coin control by cozz (rebased)	https://api.github.com/repos/bitcoin/bitcoin/pulls/3253	2013-11-14T14:14:23Z	None
+3252	open	qt: language update from transifex	https://api.github.com/repos/bitcoin/bitcoin/pulls/3252	2013-11-14T14:01:09Z	None
+3248	open	qt: align amounts on overview page to the right	https://api.github.com/repos/bitcoin/bitcoin/pulls/3248	2013-11-14T08:25:21Z	None
+3247	open	core: remove includes in .cpp, if header is already in .h	https://api.github.com/repos/bitcoin/bitcoin/pulls/3247	2013-11-13T16:44:12Z	None
+3242	open	Autoconf improvements, part 3	https://api.github.com/repos/bitcoin/bitcoin/pulls/3242	2013-11-12T21:02:41Z	None
+3239	open	Add verbose flag to getrawmempool	https://api.github.com/repos/bitcoin/bitcoin/pulls/3239	2013-11-12T01:14:08Z	None
+3234	open	Remove Wallet Tools	https://api.github.com/repos/bitcoin/bitcoin/pulls/3234	2013-11-11T13:49:35Z	None
+3229	open	Require configuration of mining before creating blocks	https://api.github.com/repos/bitcoin/bitcoin/pulls/3229	2013-11-10T23:37:21Z	None
+3207	open	qt: keep a list of requested payments	https://api.github.com/repos/bitcoin/bitcoin/pulls/3207	2013-11-05T17:38:24Z	None
+3178	open	rpcwallet: use EnsureWalletIsUnlocked() where possible	https://api.github.com/repos/bitcoin/bitcoin/pulls/3178	2013-10-28T12:02:08Z	None
+3157	open	[Qt] addressbookpage: make addressbookpage use message() / remove optionsmodel	https://api.github.com/repos/bitcoin/bitcoin/pulls/3157	2013-10-26T16:59:20Z	None
+3147	open	Autoconf improvements, part 2	https://api.github.com/repos/bitcoin/bitcoin/pulls/3147	2013-10-24T22:02:20Z	None
+3088	open	[net] Don't use third-party "what is my IP" services.	https://api.github.com/repos/bitcoin/bitcoin/pulls/3088	2013-10-13T22:45:20Z	None
+3025	open	Make signatures with non-canonical data pushes non-standard.	https://api.github.com/repos/bitcoin/bitcoin/pulls/3025	2013-09-23T21:55:31Z	None
+3005	open	gui: fix non-sticking proxy setting	https://api.github.com/repos/bitcoin/bitcoin/pulls/3005	2013-09-17T01:00:23Z	None
+2975	open	RPC: createrawtransactions gains 'fee' pseudo-address for fee safety	https://api.github.com/repos/bitcoin/bitcoin/pulls/2975	2013-09-04T17:33:44Z	None
+2966	open	Remove vtxPrev from CWalletTx	https://api.github.com/repos/bitcoin/bitcoin/pulls/2966	2013-09-01T13:26:41Z	None
+2964	open	Headers-based synchronization and parallel block download	https://api.github.com/repos/bitcoin/bitcoin/pulls/2964	2013-08-31T20:47:14Z	None
+2910	open	Don't store or send blocks forked before last checkpoint.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2910	2013-08-19T13:17:59Z	None
+2906	open	Added new RPC method for explicitly banning nodes or removing a ban.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2906	2013-08-17T20:34:09Z	None
+2900	open	Add NODE_BLOOM service bit and bump protocol version	https://api.github.com/repos/bitcoin/bitcoin/pulls/2900	2013-08-15T14:44:08Z	None
+2861	open	Add support for watch-only addresses	https://api.github.com/repos/bitcoin/bitcoin/pulls/2861	2013-07-25T23:11:57Z	None
+2844	open	Add unauthenticated HTTP REST interface	https://api.github.com/repos/bitcoin/bitcoin/pulls/2844	2013-07-22T19:35:03Z	None
+2841	open	Added new config option noautofillkeypool.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2841	2013-07-21T04:53:19Z	None
+2839	open	Add block blacklisting RPC	https://api.github.com/repos/bitcoin/bitcoin/pulls/2839	2013-07-20T11:20:48Z	None
+2834	open	getblocktemplate: longpolling support	https://api.github.com/repos/bitcoin/bitcoin/pulls/2834	2013-07-17T02:24:08Z	None
+2784	open	Reduce keepalive ping/timeout	https://api.github.com/repos/bitcoin/bitcoin/pulls/2784	2013-06-22T17:17:37Z	None
+2612	open	Bitcoin-Qt: massive options/settings handling rework	https://api.github.com/repos/bitcoin/bitcoin/pulls/2612	2013-05-03T10:56:50Z	None
+2575	open	extend core proxy options and handling	https://api.github.com/repos/bitcoin/bitcoin/pulls/2575	2013-04-26T08:45:01Z	None
+2412	open	Network activity toggle	https://api.github.com/repos/bitcoin/bitcoin/pulls/2412	2013-03-26T02:33:14Z	None
+2407	open	Added CWalletManager class to support loading of multiple wallets.	https://api.github.com/repos/bitcoin/bitcoin/pulls/2407	2013-03-24T02:50:04Z	None
+2342	open	Fix off-by-one errors in the interpretation of IsFinal()	https://api.github.com/repos/bitcoin/bitcoin/pulls/2342	2013-03-04T10:22:01Z	None
+2340	open	Discourage fee sniping with nLockTime	https://api.github.com/repos/bitcoin/bitcoin/pulls/2340	2013-03-01T11:09:14Z	None
+2124	open	Dynamically Loadable Multiple Wallet Support Complete!!!	https://api.github.com/repos/bitcoin/bitcoin/pulls/2124	2012-12-23T13:30:58Z	None
+1816	open	Support for specific BIP 22 rejection reasons and BIP 23 block proposal	https://api.github.com/repos/bitcoin/bitcoin/pulls/1816	2012-09-10T02:57:58Z	None
+1674	open	enable full GCC Stack-smashing protection for all OSes	https://api.github.com/repos/bitcoin/bitcoin/pulls/1674	2012-08-14T09:48:18Z	None
+1647	open	CreateNewBlock: Child-pays-for-parent / Add transaction fee later	https://api.github.com/repos/bitcoin/bitcoin/pulls/1647	2012-08-01T22:43:58Z	None
+1583	open	JSON-RPC method: prioritisetransaction <txid> <priority delta>	https://api.github.com/repos/bitcoin/bitcoin/pulls/1583	2012-07-11T18:54:17Z	None

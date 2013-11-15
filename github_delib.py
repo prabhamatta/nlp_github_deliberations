@@ -100,37 +100,67 @@ def getIssuesList(main_url, state='open'):
             comments_url = pull["comments_url"]
             pull_created_at = pull["created_at"]
             pull_closed_at = pull["closed_at"]
+            user_login  = pull["user"]["login"]
             
-            print pull_num
-            issues_all.write(str(pull_num)+"\t" + str(pull_state)+"\t" +str(text)+"\t" + str(pull_url)+"\t"  +str(comments_num)+"\t" +str(comments_url)+"\t"+ str(pull_created_at)+"\t" + str(pull_closed_at) +"\n")
+            #print pull_num
+            issues_all.write(str(pull_num)+"\t" + str(pull_state)+"\t" +str(user_login)+"\t"+str(text)+"\t" + str(pull_url)+"\t"  +str(comments_num)+"\t" +str(comments_url)+"\t"+ str(pull_created_at)+"\t" + str(pull_closed_at) +"\n")
             issues_conversation_urls.write(
                  str(pull_num)+"\t" + str(pull_state)+"\t"+str(comments_num)+"\t" +str(comments_url) +"\n" )
             issues_text.write( str(pull_num)+"\t" +str(text)+ "\n" )
         except Exception, e:        
-            print "Error : ", e        
+            #print "Error : ", e        
+            pass
                         
     issues_all.close()
     issues_conversation_urls.close()
     issues_text.close()
 
 def getIssuesConversations(main_url):
-    print github_token
-    #GET /repos/:owner/:repo/pulls/comments
-    url = main_url + '/pulls/comments?access_token={0}'.format(github_token)
-    print url
-    pulls = open("pull_request_comments.json", 'w')
     
-    data = getPagedRequest(url)
-    pullRequestComments = {}    
-    for pull in data:
-        pull_num = pull["id"]
-        pull_url = pull["url"]
-        text = pull["body"]
-        commit_id = pull["commit_id"]
-        user_login  = pull["user"]["login"]
-        pull_date = pull["created_at"]
-        #pullRequestComments[pull_num] =
-        print pprint(pull)
+    #issues_conversation_text = codecs.open("issues_conversation_text.tsv", 'w',  "UTF-8") 
+    issues_conversation_details_all = codecs.open("issues_conversation_details_all.tsv", 'w',  "UTF-8")     
+
+
+    fnames = ["issues_conversation_urls_open.tsv" ,"issues_conversation_urls_closed.tsv" ]  
+    for fname in fnames:
+        with codecs.open(fname, 'r',  "UTF-8") as fin:
+            for line in fin:
+                main_url = line.split("\t")[3].strip()
+                issue_id = line.split("\t")[0].strip()
+                url = main_url + '?access_token={0}'.format( github_token)
+                data = getPagedRequest(url)
+                for comment in data:
+                    try:
+                        comment_id = comment["id"]
+                        comment_url = comment["url"]
+                        comment_user = comment["user"]["login"]
+                        comment_text = comment["body"]
+                        
+                        issues_conversation_details_all.write( str(issue_id)+"\t"  +str(comment_id)+"\t" +str(comment_url)+"\t"+ str(comment_user)+"\t" + str(comment_text) +"\n")
+                        
+                        #issues_conversation_text.write(str(issue_id)+"\t"  +str(comment_id)+"\t" +str(comment_url)+"\t"+ str(comment_user)+"\t" + str(comment_text) +"\n")
+                    
+                    except Exception, e: 
+                        #print "Error : ", e 
+                        pass
+    issues_conversation_details_all.close()
+    
+    ##GET /repos/:owner/:repo/pulls/comments
+    #url = main_url + '/pulls/comments?access_token={0}'.format(github_token)
+    #print url
+    #pulls = open("pull_request_comments.json", 'w')
+    
+    #data = getPagedRequest(url)
+    #pullRequestComments = {}    
+    #for pull in data:
+        #pull_num = pull["id"]
+        #pull_url = pull["url"]
+        #text = pull["body"]
+        #commit_id = pull["commit_id"]
+        #user_login  = pull["user"]["login"]
+        #pull_date = pull["created_at"]
+        ##pullRequestComments[pull_num] =
+        #print pprint(pull)
         
     
     
@@ -172,7 +202,7 @@ def getPagedRequest(url):
     """get a full list, handling APIv3's paging"""
     results = []
     while url:
-        print("fetching %s" % url)
+        #print("fetching %s" % url)
         f = urlopen(url)
         results_json = json.load(f)
         if type(results_json) == list:
@@ -201,10 +231,11 @@ if __name__ == '__main__':
     """
     get issue details and the conversation urls
     """
-    getIssuesList(main_url,"open")
-    getIssuesList(main_url,'closed')
+    #getIssuesList(main_url,"open")
+    #getIssuesList(main_url,'closed')
     
     """
     get individual comments of each conversation of each issue
     """    
+    getIssuesConversations(main_url)
 
