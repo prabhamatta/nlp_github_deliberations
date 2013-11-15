@@ -6,6 +6,7 @@ import json
 import re
 from datetime import datetime
 import time
+from pprint import pprint
 
 #ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ
 ISO8601 = "%Y-%m-%dT %H:%M:%SZ"
@@ -30,7 +31,7 @@ def getContributors(main_url):
     """
     # Get contributors list with additions, deletions, and commit counts
     # GET /repos/:owner/:repo/stats/contributors
-    # format of the output http://developer.github.com/v3/repos/statistics/#get-contributors-list-with-additions-deletions-and-commit-counts
+    # format of the output http://developer.github.com/v3/repos/statistics/
     """
     url = main_url + '/stats/contributors?access_token={0}'.format(github_token)
     print url
@@ -47,7 +48,54 @@ def getContributors(main_url):
     details.close()
     return
 
+def getPullRequestsList(main_url):
+    #GET /repos/:owner/:repo/pulls
+    url = main_url + '/pulls?access_token={0}'.format(github_token)
+    print url  
+    
+    
+    data = getPagedRequest(url)
+    pulls_file = open("pull_requests.tsv", 'w')
+    pulls ={}
+    print len(data)
+    for pull in data:
+        pull_num = pull["number"]
+        pull_state = pull["state"]        
+        pull_title = pull["title"]
+        pull_url = pull["url"]
+        text = pull["body"]
+        pull_created_at = pull["created_at"]
+        pull_closed_at = pull["closed_at"]
+        pull_merged_at = pull["merged_at"]
+        
+        print pull_num
+        pulls_file.write( str(pull_num)+"\t" + str(pull_state)+"\t" +str(pull_title )+"\t" + str(pull_url)+"\t" + str(pull_created_at)+"\t" + str(pull_closed_at) + "\t"+str(pull_merged_at)+"\n")
+        
+        #pulls_file.write(str(user["author"]["login"])+"\t" + str(user["author"]["id"]) +"\t"+ str(user["author"]["url"]) + "\t" + str(user["total"]) + "\n")
+    pulls_file.close()
 
+def getPullRequestComments(main_url):
+    print github_token
+    #GET /repos/:owner/:repo/pulls/comments
+    url = main_url + '/pulls/comments?access_token={0}'.format(github_token)
+    print url
+    pulls = open("pull_request_comments.json", 'w')
+    
+    data = getPagedRequest(url)
+    pullRequestComments = {}    
+    for pull in data:
+        pull_num = pull["id"]
+        pull_url = pull["url"]
+        text = pull["body"]
+        commit_id = pull["commit_id"]
+        user_login  = pull["user"]["login"]
+        pull_date = pull["created_at"]
+        #pullRequestComments[pull_num] =
+        print pprint(pull)
+        
+    
+    
+    
 
 def getIssues( main_url, state='all'):
     url = main_url + '/issues?access_token={0}&state={1}'.format(github_token,state)
@@ -109,36 +157,8 @@ if __name__ == '__main__':
     repo = "bitcoin"
     main_url = "https://api.github.com/repos/"+ project+"/"+repo
     print main_url
-    getContributors(main_url)
+    #getContributors(main_url)
     #getCoreCollaborators(main_url)
     #print getCommits(main_url)
-
-
-
-    #getCommitInfo(settings, project_url, 'd31f0a266863e23ddfb5f68d48059a5d67f6d683')[0]
-
-    #open_issues = getIssues(settings, project_url, state='open')
-
-    #open_issues[0]
-
-    #closed_issues = getIssues(project_url, state='closed')
-
-    ##  Note issues have ONLY a comments_url, not the actual comments
-    #closed_issues[0]
-
-
-    #print len(open_issues)
-    #print len(closed_issues)
-
-
-    #issue_meta = ['title', 'created_at', 'labels', 'closed_at', 'user', 'id', 'number', 'comments']
-    #iclosed = pd.DataFrame(closed_issues, columns=issue_meta)
-    #iclosed['user'] = iclosed.user.map(lambda user: user['login'])
-
-
-    #iclosed.number[0]
-
-    #getIssueComments(settings, project_url, 4490)
-
-
+    getPullRequestsList(main_url)
 

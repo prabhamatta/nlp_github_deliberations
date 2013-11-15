@@ -1,0 +1,6 @@
+gavinandresen	331997	https://api.github.com/users/gavinandresen
+gmaxwell	858454	https://api.github.com/users/gmaxwell
+jgarzik	494411	https://api.github.com/users/jgarzik
+laanwj	126646	https://api.github.com/users/laanwj
+sipa	548488	https://api.github.com/users/sipa
+tcatm	345092	https://api.github.com/users/tcatm
