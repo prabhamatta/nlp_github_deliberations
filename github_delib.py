@@ -122,7 +122,7 @@ def getIssuesList(main_url, state='open'):
             pull_closed_at = pull["closed_at"]
             user_login  = pull["user"]["login"]
             
-            print text
+            #print text
 
             #print pull_num
             issues_all.write(str(pull_num)+"\t" + str(pull_state)+"\t" +str(user_login)+"\t"+str(text)+"\t" + str(pull_url)+"\t"  +str(comments_num)+"\t" +str(comments_url)+"\t"+ str(pull_created_at)+"\t" + str(pull_closed_at) +"\n")
@@ -196,12 +196,12 @@ def getPullsList(main_url, state='open'):
             body = pull["body"]
             text = text_cleanup(body)            
             #comments_num = pull["number"]
-            comments_url = pull["review_comments_url"]
+            comments_url = pull["comments_url"]
             pull_created_at = pull["created_at"]
             pull_closed_at = pull["closed_at"]
             user_login  = pull["user"]["login"]
             
-            print text
+            #print text
 
             #print pull_num
             issues_all.write(str(pull_num)+"\t" + str(pull_state)+"\t" +str(user_login)+"\t"+str(text)+"\t" + str(pull_url)+"\t" +str(comments_url)+"\t"+ str(pull_created_at)+"\t" + str(pull_closed_at) +"\n")
@@ -217,9 +217,6 @@ def getPullsList(main_url, state='open'):
     issues_text.close()
 
 def getPullsConversations(main_url):
-    """
-    Redundant 
-    """
 
     #issues_conversation_text = codecs.open("issues_conversation_text.tsv", 'w',  "UTF-8") 
     issues_conversation_details_all = codecs.open("pulls_conversation_details_all.tsv", 'w',  "UTF-8")     
@@ -229,10 +226,10 @@ def getPullsConversations(main_url):
     for fname in fnames:
         with codecs.open(fname, 'r',  "UTF-8") as fin:
             for line in fin:
-                url = main_url + '/issues/{0}/comments?access_token={1}'.format( issue_id, github_token)
+                #url = main_url + '/issues/{0}/comments?access_token={1}'.format( issue_id, github_token)
                 
-                main_url = line.split("\t")[3].strip()
-                issue_id = line.split("\t")[0].strip()
+                main_url = line.strip().split("\t")[2].strip()
+                issue_id = line.strip().split("\t")[0].strip()
                 url = main_url + '?access_token={0}'.format( github_token)
                 data = getPagedRequest(url)
                 for comment in data:
@@ -305,11 +302,7 @@ def getPagedRequest(url):
         time.sleep(0.25)
     return results
 
-def test():
-    x=10.0
-    y=25.0
-    z=70.0
-    print (0.5*x*x)+(0.2*y*y)+0.3*(z*z) 
+
 if __name__ == '__main__':
     project = "bitcoin"
     repo = "bitcoin"
@@ -338,12 +331,12 @@ if __name__ == '__main__':
     get pull details and the conversation urls
     """
     #getPullsList(main_url,"open")
-    getPullsList(main_url,'closed')
+    #getPullsList(main_url,'closed')
 
     """
     get individual comments of each conversation of each issue
     """    
-    #getPullsConversations(main_url)
+    getPullsConversations(main_url)
     
     
     #testtext = "heloworld. \r\n what! is this @pmatta \n /*this is the*/ hello\n and http://github.com this is world\n "

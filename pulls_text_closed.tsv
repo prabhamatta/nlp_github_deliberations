@@ -1,4 +1,21 @@
+3293	When building from tarball (i.g. not from git source tree or when git is not available) `genbuild.sh` write undefined $TIME to "build/build.h". Even worse, when TIME is set in the environment then its value is written instead of a date. For me this change fixed FTBFS which I got because I had TIME enviroment variable set with format for time(1) utility.
+3287	- this was unused for the label and also makes no sense, so remove it
+3283	I often want to run RPC command(s) as soon as Ive started bitcoind. This lets me do that without annoying sleeps or grepping debug.log; e.g. bitcoin-cli -rpcwait getinfo
+3278	Pull requests #3259, #3260, #3261, #3262, #3263, #3264 from Updated the commit messages and made the commit titles more informative.
+3275	This adds to the to-do list for each release, avoiding future situations like
+3272	I was merging change this every time before generation of the doxygen developer docs (https://dev.visucore.com/bitcoin/doxygen/) but theres no reason why it cant just be merged upstream.
+3268	GUIUtil::setClipboard() was introduced by the Coincontrol pull and it makes sense to use it now :).
+3267	- add missing license headers - make compatible with Qt5 - enforce header cleanup style - small code style cleanups - rename Coin Control dialog into Coin Control Address Selection - use default font for the windows labels (no monospace)
+3264	Upgraded to serial 21. - Add support for Clang - Further details can be found at <http://savannah.gnu.org/patch/?8186>.
+3263	Upgraded to serial 27. - Use ls -r in order to try newer version before older ones. Simplify ls pattern so also dylibs are detected.
+3262	Upgraded to serial 17. - Use ls -r rather than non-portable tool tac. Simplify filepattern in ls expression so dylib (on OSX) are also detected.
+3261	Upgraded to serial 22. - Fixed detection of dynamic libraries on Mac OS X (*.dylib) - See for further details.
+3260	Upgraded to serial 26 - Fixed cut-and-paste error. - See for further details. - Use ls -r rather than non-portable tool tac. - Simplify filepattern in ls expression so dylib (on OSX) are also detected.
+3259	Upgraded to serial 21. - Add aarch64 to the list of lib64 architectures
 3258	Dont talk about it, just merge it ^^. NO other change than removal of spaces.
+3257	- example: if util.h includes stdint.h, remove it from util.cpp, as util.h is the first header included in util.cpp
+3255	- remove default value for parent variable in dialogs, which should appear centered over main GUI and pass appropriate value - add some addition NULL pointer checks
+3253	Rebased version of Coin Control #2343 (all changes were trivial; biggest conflicts were `uint64`->`uint64_t` and the header refactor)
 3252	Adds three new languages: - de_AT: German (Austria) - gl: Galician - sl_SI: Slovenian (Slovenia) Updates many others. Thanks to the translators contributing on Transifex!
 3251	spellcheck.
 3248	This is more consistent with other places in the GUI. ![overviewalignright](https://f.cloud.github.com/assets/126646/1539303/35e0bb78-4d06-11e3-8cad-d6eeff582cf8.png)
@@ -10,6 +27,7 @@
 3238	- harmonize function with GUIUtil::getOpenFileName() - also make PNG Image singular (grammar)
 3237	- the warnings are related to MinGWs inttypes.h (observed with MinGW based on GCC version 4.8.1 (rev5, Built by MinGW-W64 project) and likely other version also suffer from this) - fixes #3236
 3235	
+3234	We already have the exact same funtionality in /contrib/bitrpc/bitrpc.py If we really do need standalone scripts, then Ill write something to pull it from that file, rather than having duplicate code.
 3233	Lets merge the non-controversial commits of #3147, at least if it passes the pulltester now.
 3232	Add note about building on Ubuntu 13.10 (issue #3219). Also mention `autoconf` as required package.
 3231	Updates some documentation, sparked from issue #3230. I cannot test the build instructions myself, but assume they will work (what is there now doesnt work regardless). The command find . -path */.git* -prune -o -type f -exec grep makefile\\. {} \; -print shows only 2 more files that reference the old makefile.* files: cd src; $(MAKE) -f makefile.unix bitcoind cd src; $(MAKE) -f makefile.unix clean cd src; $(MAKE) -f makefile.unix test_bitcoin ./contrib/debian/rules src/makefile.osx (Expat). ./contrib/debian/changelog
@@ -180,6 +198,7 @@
 2969	Signed-off-by: Soroush Rabiei <soroush.rabiei@gmail.com>
 2968	This is a cheap hack to address the warnings people get during initial download, feel free to discard in favor of something more reasonable.
 2967	
+2964	(see individual commits, in particular "Switch to headers-based synchronization", for detailed explanation of the changes). This implements headers-based synchronization and parallel block download. Summary of the changes: * Use `getheaders` instead of `getblocks` based synchronization, so that the best block in the chain is always known before actually downloading it. No more orphan blocks, ever. * Use a moving-window based block downloading mechanism (the heuristics are simple and behave badly for very small blocks, but except for the very beginning of the chain, it works very well). * Allow blocks to be stored out-of-order in the block database files. * Reorganize the block connection logic significantly. * Add a `getblockheader` RPC command.
 2963	- prepend "Bitcoin-Qt" in front of debug.log entries, which come from Qt - move DebugMessageHandler installation upwards to the event handler installation, which fits much better
 2961	- rename URL into URI in paymentserver where correct - add some missing Qt-coding-stuff in paymentserver - change QSpinBox to QLineEdit as base for BitcoinAmountField in .ui files (as this is the result when converting the BAF back into base) - remove some c_str() and replace with QString::fromStdString() - remove several new-lines - remove unneeded spaces - indentation fixes
 2959	
