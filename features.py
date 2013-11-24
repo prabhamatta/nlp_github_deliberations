@@ -13,13 +13,13 @@ def getUsersComments(f):
     users_comments = {}
     for line in f.readlines():
         data = line.split('\t')
-        user = data[4]
+        user = data[3]
         if user != 'BitcoinPullTester':
             if user not in users_comments:
-                comment_list = [data[5]]
+                comment_list = [data[4]]
                 users_comments[user] = comment_list
             else:
-                users_comments[user].append(data[5])
+                users_comments[user].append(data[4])
     return users_comments
 
 
@@ -99,24 +99,57 @@ def getWhQuestionCount(comment_list):
 
     
 def getTotalPunctuation(comment_list):
-    pass
+    """ Gets count of the punctuation used by the user """
+    num_punct = 0
+    for comment in comment_list:
+        for eachword in [word for word in nltk.tokenize.word_tokenize(comment) if word[0] in string.punctuation]:
+            num_punct += 1
+    return num_punct
 
-def getNumAtMentions(comment_list):
-    pass
 
-def getMostUsedWords(comment_list):
-    pass
+# def getNumAtMentions(comment_list):
+    """ On hold for now. @ mentions are not in the issues_conversation_details_all file but in mentions_..."""
+#   for i, comment in enumerate(comment_list):
+#         print i, comment
 
-def getPositiveWordCount(comment_list):
-    pass
+def getMostFreqWords(comment_list, num_words):
+    """ returns list of num_words most frequently used words for a user
+        NOTE still gets some punctuation words..."""
+    from nltk.corpus import stopwords
+    stopwords = stopwords.words('english')
+    word_list = []
+    for comment in comment_list:
+        for eachword in [word for word in nltk.tokenize.word_tokenize(comment) if word not in string.punctuation]:
+            if eachword[-1] in string.punctuation and eachword[-1] not in stopwords:
+                word_list.append(eachword[:-1].lower())
+            elif eachword not in stopwords:
+                word_list.append(eachword.lower())
+    return nltk.FreqDist(word_list).keys()[0:num_words]
+    
 
-def getNegativeWordCount(comment_list):
-    pass
+def getPosWordCount(comment_list):
+    """ returns number of positive words used in all of users comments """
+    words = getWordTokens(comment_list)
+    #print nltk.FreqDist([word.lower() for word in words if word.lower() in posWords])
+    return len([word.lower() for word in words if word.lower() in posWords])
+
+def getNegWordCount(comment_list):
+    """ returns number of negative words used in all of users comments """
+    words = getWordTokens(comment_list)
+    #print nltk.FreqDist([word for word in words if word.lower() in negWords])
+    return len([word for word in words if word.lower() in negWords])
 
 def getNumUniqueWords(comment_list):
     pass
 
 '''---------------------------add helper functions--------------------------'''
+posWords = set(["absolutely", "adorable", "accepted", "acclaimed", "accomplish", "accomplishment", "achievement", "action", "active", "admire", "adventure", "affirmative", "affluent", "agree", "agreeable", "amazing", "angelic", "appealing", "approve", "aptitude", "attractive", "awesome", "beaming", "beautiful", "believe", "beneficial", "bliss", "bountiful", "bounty", "brave", "bravo", "brilliant", "bubbly", "calm", "celebrated", "certain", "champ", "champion", "charming", "cheery", "choice", "classic", "classical", "clean", "commend", "composed", "congratulation", "constant", "cool", "courageous", "creative", "cute", "dazzling", "delight", "delightful", "distinguished", "divine", "earnest", "easy", "ecstatic", "effective", "effervescent", "efficient", "effortless", "electrifying", "elegant", "enchanting", "encouraging", "endorsed", "energetic", "energized", "engaging", "enthusiastic", "essential", "esteemed", "ethical", "excellent", "exciting", "exquisite", "fabulous", "fair", "familiar", "famous", "fantastic", "favorable", "fetching", "fine", "fitting", "flourishing", "fortunate", "free", "fresh", "friendly", "fun", "funny", "generous", "genius", "genuine", "giving", "glamorous", "glowing", "good", "gorgeous", "graceful", "great", "green", "grin", "growing", "handsome", "happy", "harmonious", "healing", "healthy", "hearty", "heavenly", "honest", "honorable", "honored", "hug", "idea", "ideal", "imaginative", "imagine", "impressive", "independent", "innovate", "innovative", "instant", "instantaneous", "instinctive", "intuitive", "intellectual", "intelligent", "inventive", "jovial", "joy", "jubilant", "keen", "kind", "knowing", "knowledgeable", "laugh", "legendary", "light", "learned", "lively", "lovely", "lucid", "lucky", "luminous", "marvelous", "masterful", "meaningful", "merit", "meritorious", "miraculous", "motivating", "moving", "natural", "nice", "novel", "now", "nurturing", "nutritious", "okay", "one", "one-hundred percent", "open", "optimistic", "paradise", "perfect", "phenomenal", "pleasurable", "plentiful", "pleasant", "poised", "polished", "popular", "positive", "powerful", "prepared", "pretty", "principled", "productive", "progress", "prominent", "protected", "proud", "quality", "quick", "quiet", "ready", "reassuring", "refined", "refreshing", "rejoice", "reliable", "remarkable", "resounding", "respected", "restored", "reward", "rewarding", "right", "robust", "safe", "satisfactory", "secure", "seemly", "simple", "skilled", "skillful", "smile", "soulful", "sparkling", "special", "spirited", "spiritual", "stirring", "stupendous", "stunning", "success", "successful", "sunny", "super", "superb", "supporting", "surprising", "terrific", "thorough", "thrilling", "thriving", "tops", "tranquil", "transforming", "transformative", "trusting", "truthful", "unreal", "unwavering", "up", "upbeat", "upright", "upstanding", "valued", "vibrant", "victorious", "victory", "vigorous", "virtuous", "vital", "vivacious", "wealthy", "welcome", "well", "whole", "wholesome", "willing", "wonderful", "wondrous", "worthy", "wow", "yes", "yummy", "zeal", "zealous"])
+negWords = set(["abysmal", "adverse", "alarming", "angry", "annoy", "anxious", "apathy", "appalling", "atrocious", "awful", "bad", "banal", "barbed", "belligerent", "bemoan", "beneath", "boring", "broken", "callous", "can't", "clumsy", "coarse", "cold", "cold-hearted", "collapse", "confused", "contradictory", "contrary", "corrosive", "corrupt", "crazy", "creepy", "criminal", "cruel", "cry", "cutting", "dead", "decaying", "damage", "damaging", "dastardly", "deplorable", "depressed", "deprived", "deformed", "deny", "despicable", "detrimental", "dirty", "disease", "disgusting", "disheveled", "dishonest", "dishonorable", "dismal", "distress", "don\'t", "dreadful", "dreary", "enraged", "eroding", "evil", "fail", "faulty", "fear", "feeble", "fight", "filthy", "foul", "frighten", "frightful", "gawky", "ghastly", "grave", "greed", "grim", "grimace", "gross", "grotesque", "gruesome", "guilty", "haggard", "hard", "hard-hearted", "harmful", "hate", "hideous", "homely", "horrendous", "horrible", "hostile", "hurt", "hurtful", "icky", "ignore", "ignorant", "immature", "imperfect", "impossible", "inane", "inelegant", "infernal", "injure", "injurious", "insane", "insidious", "insipid", "jealous", "junky", "lose", "lousy", "lumpy", "malicious", "mean", "menacing", "messy", "misshapen", "missing", "misunderstood", "moan", "moldy", "monstrous", "naive", "nasty", "naughty", "negate", "negative", "never", "no", "nobody", "nondescript", "nonsense", "not", "noxious", "objectionable", "odious", "offensive", "old", "oppressive", "pain", "perturb", "pessimistic", "petty", "plain", "poisonous", "poor", "prejudice", "questionable", "quirky", "quit", "reject", "renege", "repellant", "reptilian", "repulsive", "repugnant", "revenge", "revolting", "rocky", "rotten", "rude", "ruthless", "sad", "savage", "scare", "scary", "scream", "severe", "shoddy", "shocking", "sick", "sickening", "sinister", "slimy", "smelly", "sobbing", "sorry", "spiteful", "sticky", "stinky", "stormy", "stressful", "stuck", "stupid", "substandard", "suspect", "suspicious", "tense", "terrible", "terrifying", "threatening", "ugly", "undermine", "unfair", "unfavorable", "unhappy", "unhealthy", "unjust", "unlucky", "unpleasant", "upset", "unsatisfactory", "unsightly", "untoward", "unwanted", "unwelcome", "unwholesome", "unwieldy", "unwise", "upset", "vice", "vicious", "vile", "villainous", "vindictive", "wary", "weary", "wicked", "woeful", "worthless", "wound", "yell", "yucky", "zero"])
+
+def getWordTokens(comment_list):
+    """ takes list of comments and returns a list of tokens including words and punctuation """
+    all_comments = ''.join(comment_list)
+    return [word for word in nltk.tokenize.word_tokenize(all_comments)]
 
 
 if __name__ == '__main__':
@@ -124,15 +157,19 @@ if __name__ == '__main__':
     comments = getUsersComments(f)
     testuser = 'mikehearn'
 
-    #print getWhQuestionCount(comments[testuser])
-    
-     #Uncomment to run all
-    print "total number of whQuestion words in users comments: " + str(getWhQuestionCount(comments[testuser]))
-    print "total number of words used: " + str(getTotalWordsUsed(comments[testuser]))
+
+     #Uncomment to run
+    '''
+    print "num positive words used: " + str(getPosWordCount(comments[testuser]))
+    print "num negative words used: " + str(getNegWordCount(comments[testuser]))
+    print "list of top %d words: " % 20 + str(getMostFreqWords(comments[testuser], 20))
+    print "total num of punctuation used: " + str(getTotalPunctuation(comments[testuser]))
+    print "total num of whQuestion words in users comments: " + str(getWhQuestionCount(comments[testuser]))
+    print "total num of words used: " + str(getTotalWordsUsed(comments[testuser]))
     print "avg word length: " + str(getAvgWordLength(comments[testuser]))
     print "avg num words in users comments: " + str(getAvgNumWordsInComment(comments[testuser]))
     print "avg num words in users sentences: " + str(getAvgNumWordsInSent(comments[testuser]))
     print "avg num sentences per comment: " + str(getAvgNumSentences(comments[testuser]))
     print "max comment length: " + str(getMaxCommentLength(comments[testuser]))
     print "average comment length: " + str(getAvgCommentLength(comments[testuser]))
-    
+    '''
