@@ -17,21 +17,6 @@ from markdown import markdown
 ISO8601 = "%Y-%m-%dT %H:%M:%SZ"
 github_token = "e072092b2d381eb6e828f954a2b75a6c148fc57a"
 
-def removeControlChars(x):
-    return "".join([i for i in x if ord(i) in range(32, 127)])
-
-def text_cleanup(text):
-    #html = markdown(text)
-    #newtext = ''.join(BeautifulSoup(html).findAll(text=True))
-    #print newtext
-
-    text = text.replace("\t"," ")
-    text = text.replace("\n"," ")
-    text = text.replace("\'","")
-    text = text.encode('ascii', 'ignore')
-    newtext= " ".join([(word) for word in text.split() if not (word.startswith('http') or word.startswith("@"))])
-    return newtext
-    
 
 
 def getCoreCollaborators(main_url):
@@ -69,9 +54,22 @@ def getContributors(main_url):
     details.close()
     return
 
+
+def removeControlChars(x):
+    return "".join([i for i in x if ord(i) in range(32, 127)])
+
+def text_cleanup(text):
+    text = text.replace("\t"," ")
+    text = text.replace("\n"," ")
+    text = text.replace("\r"," ")
+    text = text.encode('ascii', 'ignore')
+    #newtext= " ".join([(word) for word in text.split() if not (word.startswith('http') or word.startswith("@"))])
+    return text
+    
+
 def getIssuesList(main_url, state='open'):
     """
-    Imp Note: all pull-requests are "issues" - some are closed/merged and some are still open. 
+    Note: all pull-requests are "issues" - some are closed/merged and some are still open. 
     When you query pull-requests from api, we get only "open" pull-reuests
     The ideal way would be to get the closed pull-requests from "issues". 
 
@@ -99,11 +97,11 @@ def getIssuesList(main_url, state='open'):
     data = getPagedRequest(url)
     fname1 = "issues_all_" +state +".tsv"
     fname2 = "issues_conversation_urls_" +state + ".tsv"
-    fname3 = "issues_text_" +state + ".tsv"
+    #fname3 = "issues_text_" +state + ".tsv"
 
     issues_all = codecs.open(fname1, 'w',  "UTF-8") 
     issues_conversation_urls = codecs.open(fname2, 'w',  "UTF-8") 
-    issues_text = codecs.open(fname3, 'w',  "UTF-8") 
+    #issues_text = codecs.open(fname3, 'w',  "UTF-8") 
 
 
     pulls ={}
@@ -128,21 +126,19 @@ def getIssuesList(main_url, state='open'):
             issues_all.write(str(pull_num)+"\t" + str(pull_state)+"\t" +str(user_login)+"\t"+str(text)+"\t" + str(pull_url)+"\t"  +str(comments_num)+"\t" +str(comments_url)+"\t"+ str(pull_created_at)+"\t" + str(pull_closed_at) +"\n")
             issues_conversation_urls.write(
                 str(pull_num)+"\t" + str(pull_state)+"\t"+str(comments_num)+"\t" +str(comments_url) +"\n" )
-            issues_text.write( str(pull_num)+"\t" +str(text)+ "\n" )
+            #issues_text.write( str(pull_num)+"\t" +str(text)+ "\n" )
         except Exception, e:        
             #print "Error : ", e        
             pass
 
     issues_all.close()
     issues_conversation_urls.close()
-    issues_text.close()
+    #issues_text.close()
 
 def getIssuesConversations(main_url):
 
-    #issues_conversation_text = codecs.open("issues_conversation_text.tsv", 'w',  "UTF-8") 
     issues_conversation_details_all = codecs.open("issues_conversation_details_all.tsv", 'w',  "UTF-8")     
-
-
+    issues_conversation_details_all_raw = codecs.open("issues_conversation_details_all_raw.tsv", 'w',  "UTF-8")     
     fnames = ["issues_conversation_urls_open.tsv" ,"issues_conversation_urls_closed.tsv" ]  
     for fname in fnames:
         with codecs.open(fname, 'r',  "UTF-8") as fin:
@@ -153,20 +149,28 @@ def getIssuesConversations(main_url):
                 data = getPagedRequest(url)
                 for comment in data:
                     try:
+                        
                         comment_id = comment["id"]
                         comment_url = comment["url"]
                         comment_user = comment["user"]["login"]
                         text = comment["body"]
                         comment_text = text_cleanup(text)
+                        created_at = comment["created_at"]
 
-                        issues_conversation_details_all.write( str(issue_id)+"\t"  +str(comment_id)+"\t" +str(comment_url)+"\t"+ str(comment_user)+"\t" + str(comment_text) +"\n")
-
-                        #issues_conversation_text.write(str(issue_id)+"\t"  +str(comment_id)+"\t" +str(comment_url)+"\t"+ str(comment_user)+"\t" + str(comment_text) +"\n")
+                        issues_conversation_details_all.write( str(issue_id)+"\t"+str(comment_id)+"\t" + str(created_at) +"\t"  +str(comment_url)+"\t"+ str(comment_user)+"\t" + str(comment_text) +"\n")
+                        
+                        comment_dict = {}
+                        comment_dict["comment_meta"] = str(issue_id)+"\t"  +str(comment_id)+"\t"  + str(created_at) +"\t" +str(comment_url)+"\t"+ str(comment_user)
+                        comment_dict["comment_text"] = text
+                        
+                        issues_conversation_details_all_raw.write(json.dumps(comment_dict))
+                        issues_conversation_details_all_raw.write("\n")
 
                     except Exception, e: 
                         #print "Error : ", e 
                         pass
     issues_conversation_details_all.close()
+    issues_conversation_details_all_raw.close()
 
 
 
@@ -178,11 +182,11 @@ def getPullsList(main_url, state='open'):
     data = getPagedRequest(url)
     fname1 = "pulls_all_" +state +".tsv"
     fname2 = "pulls_conversation_urls_" +state + ".tsv"
-    fname3 = "pulls_text_" +state + ".tsv"
+    #fname3 = "pulls_text_" +state + ".tsv"
 
     issues_all = codecs.open(fname1, 'w',  "UTF-8") 
     issues_conversation_urls = codecs.open(fname2, 'w',  "UTF-8") 
-    issues_text = codecs.open(fname3, 'w',  "UTF-8") 
+    #issues_text = codecs.open(fname3, 'w',  "UTF-8") 
 
 
     pulls ={}
@@ -207,27 +211,24 @@ def getPullsList(main_url, state='open'):
             issues_all.write(str(pull_num)+"\t" + str(pull_state)+"\t" +str(user_login)+"\t"+str(text)+"\t" + str(pull_url)+"\t" +str(comments_url)+"\t"+ str(pull_created_at)+"\t" + str(pull_closed_at) +"\n")
             issues_conversation_urls.write(
                 str(pull_num)+"\t" + str(pull_state)+"\t" +str(comments_url) +"\n" )
-            issues_text.write( str(pull_num)+"\t" +str(text)+ "\n" )
+            #issues_text.write( str(pull_num)+"\t" +str(text)+ "\n" )
         except Exception, e:        
             print "Error : ", e        
             pass
 
     issues_all.close()
     issues_conversation_urls.close()
-    issues_text.close()
+    #issues_text.close()
 
 def getPullsConversations(main_url):
 
-    #issues_conversation_text = codecs.open("issues_conversation_text.tsv", 'w',  "UTF-8") 
-    issues_conversation_details_all = codecs.open("pulls_conversation_details_all.tsv", 'w',  "UTF-8")     
-
+    pulls_conversation_details_all = codecs.open("pulls_conversation_details_all.tsv", 'w',  "UTF-8")     
+    pulls_conversation_details_all_raw = codecs.open("pulls_conversation_details_all_raw.tsv", 'w',  "UTF-8")     
 
     fnames = ["pulls_conversation_urls_open.tsv" ,"pulls_conversation_urls_closed.tsv" ]  
     for fname in fnames:
         with codecs.open(fname, 'r',  "UTF-8") as fin:
             for line in fin:
-                #url = main_url + '/issues/{0}/comments?access_token={1}'.format( issue_id, github_token)
-                
                 main_url = line.strip().split("\t")[2].strip()
                 issue_id = line.strip().split("\t")[0].strip()
                 url = main_url + '?access_token={0}'.format( github_token)
@@ -239,18 +240,23 @@ def getPullsConversations(main_url):
                         comment_user = comment["user"]["login"]
                         text = comment["body"]
                         comment_text = text_cleanup(text)
+                        created_at = comment["created_at"]
+                        
+                        pulls_conversation_details_all.write( str(issue_id)+"\t"  +str(comment_id)+"\t"  + str(created_at) +"\t"+str(comment_url)+"\t"+ str(comment_user)+"\t" + str(comment_text) +"\n")
 
-                        issues_conversation_details_all.write( str(issue_id)+"\t"  +str(comment_id)+"\t" +str(comment_url)+"\t"+ str(comment_user)+"\t" + str(comment_text) +"\n")
-
-                        #issues_conversation_text.write(str(issue_id)+"\t"  +str(comment_id)+"\t" +str(comment_url)+"\t"+ str(comment_user)+"\t" + str(comment_text) +"\n")
-
+                        comment_dict = {}
+                        comment_dict["comment_meta"] = str(issue_id)+"\t"  +str(comment_id)+"\t"  + str(created_at) +"\t"+str(comment_url)+"\t"+ str(comment_user)
+                        comment_dict["comment_text"] = text
+                                
+                        pulls_conversation_details_all_raw.write(json.dumps(comment_dict))
+                        pulls_conversation_details_all_raw.write("\n")                     
                     except Exception, e: 
                         #print "Error : ", e 
                         pass
-    issues_conversation_details_all.close()
+    pulls_conversation_details_all.close()
+    pulls_conversation_details_all_raw.close()
 
-
-
+    
 
 def getIssueComments( main_url, issue_id):
     # GET /repos/:owner/:repo/issues/:number/comments
@@ -268,9 +274,6 @@ def getCommitInfo( main_url, sha):
     #print json.load(urlopen(url))
     return getPagedRequest(url)
 
-def getReleases( project_url):
-    # GET /repos/:owner/:repo/releases
-    pass
 
 # from https://github.com/nipy/dipy/blob/master/tools/github_stats.py
 element_pat = re.compile(r'<(.+?)>')
@@ -334,11 +337,11 @@ if __name__ == '__main__':
     #getPullsList(main_url,'closed')
 
     """
-    get individual comments of each conversation of each issue
+    get individual comments of each conversation of each pull request
     """    
     getPullsConversations(main_url)
     
-    
+
     #testtext = "heloworld. \r\n what! is this @pmatta \n /*this is the*/ hello\n and http://github.com this is world\n "
     #print text_cleanup(testtext)
     #test()
