@@ -2,7 +2,7 @@
 
 import nltk
 import nltk.data
-
+import string
 
 '''-----------------------build dict of users comments----------------------'''
 
@@ -60,18 +60,44 @@ def getAvgNumWordsInSent(comment_list):
        
 
 def getAvgNumWordsInComment(comment_list):
-    pass
+    """ Gets average number of words in a users comment.
+        NOTE: currently includes punctuation words like '...' """
+    word_sum = sum([ len([word for word in nltk.tokenize.word_tokenize(comment_list_item)
+               if word not in string.punctuation]) for comment_list_item in comment_list ])
+    return float(word_sum) / len(comment_list)
 
 
 def getAvgWordLength(comment_list):
-    pass
+    """ Gets users average word length.
+        NOTE: currently includes punctuation words """
+    char_sum = 0
+    num_words = 0
+    for comment in comment_list:
+        for eachword in [word for word in nltk.tokenize.word_tokenize(comment) if word not in string.punctuation]:
+            num_words += 1
+            char_sum += len(word)
+    return float(char_sum) / num_words
+    
 
 def getTotalWordsUsed(comment_list):
-    pass
+    """ Gets total number of words the user has used.
+        NOTE: currenly includes punctuation words """
+    num_words = 0
+    for comment in comment_list:
+        for eachword in [word for word in nltk.tokenize.word_tokenize(comment) if word not in string.punctuation]:
+            num_words += 1
+    return num_words
 
 def getWhQuestionCount(comment_list):
-    pass
+    """ Returns number of whQuestion words used in all comments """
+    num_wh = 0
+    whQuestionWords = ['who','what','when','where','why', 'how']
+    for comment in comment_list:
+        for eachword in [word for word in nltk.tokenize.word_tokenize(comment) if word.lower() in whQuestionWords]:
+            num_wh += 1
+    return num_wh
 
+    
 def getTotalPunctuation(comment_list):
     pass
 
@@ -87,17 +113,26 @@ def getPositiveWordCount(comment_list):
 def getNegativeWordCount(comment_list):
     pass
 
+def getNumUniqueWords(comment_list):
+    pass
 
-'''-----------------------------helper functions----------------------------'''
-
+'''---------------------------add helper functions--------------------------'''
 
 
 if __name__ == '__main__':
     f = open('issues_conversation_details_all.tsv','r')
     comments = getUsersComments(f)
-
     testuser = 'mikehearn'
+
+    #print getWhQuestionCount(comments[testuser])
+    
+    """ Uncomment to run all
+    print "total number of whQuestion words in users comments: " + str(getWhQuestionCount(comments[testuser]))
+    print "total number of words used: " + str(getTotalWordsUsed(comments[testuser]))
+    print "avg word length: " + str(getAvgWordLength(comments[testuser]))
+    print "avg num words in users comments: " + str(getAvgNumWordsInComment(comments[testuser]))
     print "avg num words in users sentences: " + str(getAvgNumWordsInSent(comments[testuser]))
     print "avg num sentences per comment: " + str(getAvgNumSentences(comments[testuser]))
     print "max comment length: " + str(getMaxCommentLength(comments[testuser]))
     print "average comment length: " + str(getAvgCommentLength(comments[testuser]))
+    """
