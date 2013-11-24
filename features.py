@@ -11,9 +11,9 @@ punctuation
 """
 
 
-'''------------------build dict of users comments-------------'''
+'''-----------------------build dict of users comments--_-------------------'''
 
-def get_users_comments(f):
+def getUsersComments(f):
     """ Creates dictionary where key is a username and the value
         is a list of the users comments. Filters out bot user
         BitcoinPullTester """
@@ -32,13 +32,46 @@ def get_users_comments(f):
     return users_comments
 
 
+'''----------------------------feature functions----------------------------'''
+
+def getAvgCommentLength(comment_list):
+    pass
+
+def getMaxCommentLength(comment_list):
+    pass
+
+def getAvgWordsUsed(comment_list):
+    pass
+
+def getTotalWordsUsed(comment_list):
+    pass
+
+def getWhQuestionCount(comment_list):
+    pass
+
+def getTotalPunctuation(comment_list):
+    pass
+
+def getNumAtMentions(comment_list):
+    pass
+
+def getMostUsedWords(comment_list):
+    pass
+
+def getPositiveWordCount(comment_list):
+    pass
+
+def getNegativeWordCount(comment_list):
+    pass
+
+
+'''-----------------------------helper functions----------------------------'''
 
 
 
 if __name__ == '__main__':
     f = open('issues_conversation_details_all.tsv','r')
-    comments = get_users_comments(f)
-    print comments.keys()
+    comments = getUsersComments(f)
 
 
 
@@ -46,6 +79,6 @@ if __name__ == '__main__':
 
 
 
-'''------------------feature functions------------------------'''
+
 
 
