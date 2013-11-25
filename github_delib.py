@@ -9,8 +9,6 @@ from datetime import datetime
 import time
 from pprint import pprint
 import nltk
-from bs4 import BeautifulSoup
-from markdown import markdown
 
 
 #ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ
