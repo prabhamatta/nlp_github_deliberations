@@ -1,8 +1,16 @@
-## functions for extracting features from users comments
+#   functions for extracting features from users comments
+#
+#   Still to do:
+#   Remaining notes:
+#   1. Do not have time information in conversation detail page yet
+#   2. Could explore stats about users first response.
+#   3. create helper functions for reused code.
+
 
 import nltk
 import nltk.data
 import string
+import re
 
 '''-----------------------build dict of users comments----------------------'''
 
@@ -107,11 +115,6 @@ def getTotalPunctuation(comment_list):
     return num_punct
 
 
-# def getNumAtMentions(comment_list):
-    """ On hold for now. @ mentions are not in the issues_conversation_details_all file but in mentions_..."""
-#   for i, comment in enumerate(comment_list):
-#         print i, comment
-
 def getMostFreqWords(comment_list, num_words):
     """ returns list of num_words most frequently used words for a user
         NOTE still gets some punctuation words..."""
@@ -128,19 +131,40 @@ def getMostFreqWords(comment_list, num_words):
     
 
 def getPosWordCount(comment_list):
-    """ returns number of positive words used in all of users comments """
+    """ returns number of positive words used in all of users comments
+        words are from http://www.enchantedlearning.com/wordlist/positivewords.shtml """
     words = getWordTokens(comment_list)
-    #print nltk.FreqDist([word.lower() for word in words if word.lower() in posWords])
     return len([word.lower() for word in words if word.lower() in posWords])
 
 def getNegWordCount(comment_list):
-    """ returns number of negative words used in all of users comments """
+    """ returns number of negative words used in all of users comments
+        words are from http://www.enchantedlearning.com/wordlist/negativewords.shtml """
     words = getWordTokens(comment_list)
-    #print nltk.FreqDist([word for word in words if word.lower() in negWords])
     return len([word for word in words if word.lower() in negWords])
 
-def getNumUniqueWords(comment_list):
-    pass
+def getFreqNegWords(comment_list, num_words):
+    """ returns list of top num_words most frequent negative words used in comments
+        words are from http://www.enchantedlearning.com/wordlist/negativewords.shtml """
+    words = getWordTokens(comment_list)
+    return nltk.FreqDist([word.lower() for word in words if word.lower() in negWords]).keys()[:num_words]
+
+def getFreqPosWords(comment_list, num_words):
+    """ returns list of top num_words most frequent positive words used in comments
+        words are from http://www.enchantedlearning.com/wordlist/positivewords.shtml """
+    words = getWordTokens(comment_list)
+    return nltk.FreqDist([word.lower() for word in words if word.lower() in posWords]).keys()[:num_words]
+
+def getUnusualWordCount(comment_list):
+    """ Gets number of 'unusual' words used in comments. A word is considered unusual if its stem does
+        not appear in the nltk word corpus. """
+    words = getWordTokens(comment_list)
+    porter = nltk.PorterStemmer()
+    text_vocab = set(porter.stem(w.lower()) for w in words if w.isalpha())
+    english_vocab = set(porter.stem(w.lower()) for w in nltk.corpus.words.words())
+    unusual = text_vocab.difference(english_vocab)
+    return len(unusual)
+
+
 
 '''---------------------------add helper functions--------------------------'''
 posWords = set(["absolutely", "adorable", "accepted", "acclaimed", "accomplish", "accomplishment", "achievement", "action", "active", "admire", "adventure", "affirmative", "affluent", "agree", "agreeable", "amazing", "angelic", "appealing", "approve", "aptitude", "attractive", "awesome", "beaming", "beautiful", "believe", "beneficial", "bliss", "bountiful", "bounty", "brave", "bravo", "brilliant", "bubbly", "calm", "celebrated", "certain", "champ", "champion", "charming", "cheery", "choice", "classic", "classical", "clean", "commend", "composed", "congratulation", "constant", "cool", "courageous", "creative", "cute", "dazzling", "delight", "delightful", "distinguished", "divine", "earnest", "easy", "ecstatic", "effective", "effervescent", "efficient", "effortless", "electrifying", "elegant", "enchanting", "encouraging", "endorsed", "energetic", "energized", "engaging", "enthusiastic", "essential", "esteemed", "ethical", "excellent", "exciting", "exquisite", "fabulous", "fair", "familiar", "famous", "fantastic", "favorable", "fetching", "fine", "fitting", "flourishing", "fortunate", "free", "fresh", "friendly", "fun", "funny", "generous", "genius", "genuine", "giving", "glamorous", "glowing", "good", "gorgeous", "graceful", "great", "green", "grin", "growing", "handsome", "happy", "harmonious", "healing", "healthy", "hearty", "heavenly", "honest", "honorable", "honored", "hug", "idea", "ideal", "imaginative", "imagine", "impressive", "independent", "innovate", "innovative", "instant", "instantaneous", "instinctive", "intuitive", "intellectual", "intelligent", "inventive", "jovial", "joy", "jubilant", "keen", "kind", "knowing", "knowledgeable", "laugh", "legendary", "light", "learned", "lively", "lovely", "lucid", "lucky", "luminous", "marvelous", "masterful", "meaningful", "merit", "meritorious", "miraculous", "motivating", "moving", "natural", "nice", "novel", "now", "nurturing", "nutritious", "okay", "one", "one-hundred percent", "open", "optimistic", "paradise", "perfect", "phenomenal", "pleasurable", "plentiful", "pleasant", "poised", "polished", "popular", "positive", "powerful", "prepared", "pretty", "principled", "productive", "progress", "prominent", "protected", "proud", "quality", "quick", "quiet", "ready", "reassuring", "refined", "refreshing", "rejoice", "reliable", "remarkable", "resounding", "respected", "restored", "reward", "rewarding", "right", "robust", "safe", "satisfactory", "secure", "seemly", "simple", "skilled", "skillful", "smile", "soulful", "sparkling", "special", "spirited", "spiritual", "stirring", "stupendous", "stunning", "success", "successful", "sunny", "super", "superb", "supporting", "surprising", "terrific", "thorough", "thrilling", "thriving", "tops", "tranquil", "transforming", "transformative", "trusting", "truthful", "unreal", "unwavering", "up", "upbeat", "upright", "upstanding", "valued", "vibrant", "victorious", "victory", "vigorous", "virtuous", "vital", "vivacious", "wealthy", "welcome", "well", "whole", "wholesome", "willing", "wonderful", "wondrous", "worthy", "wow", "yes", "yummy", "zeal", "zealous"])
@@ -152,14 +176,18 @@ def getWordTokens(comment_list):
     return [word for word in nltk.tokenize.word_tokenize(all_comments)]
 
 
+
 if __name__ == '__main__':
     f = open('issues_conversation_details_all.tsv','r')
     comments = getUsersComments(f)
-    testuser = 'mikehearn'
+    testuser = 'petertodd'
 
+    print "total num of unusual words used: " + str(getUnusualWordCount(comments[testuser]))
 
-     #Uncomment to run
+     #Uncomment to run for test user.
     '''
+    print "list of top %d most freq pos words: " % 10 + str(getFreqPosWords(comments[testuser],10))
+    print "list of top %d most freq neg words: " % 10 + str(getFreqNegWords(comments[testuser],10))
     print "num positive words used: " + str(getPosWordCount(comments[testuser]))
     print "num negative words used: " + str(getNegWordCount(comments[testuser]))
     print "list of top %d words: " % 20 + str(getMostFreqWords(comments[testuser], 20))
@@ -173,3 +201,12 @@ if __name__ == '__main__':
     print "max comment length: " + str(getMaxCommentLength(comments[testuser]))
     print "average comment length: " + str(getAvgCommentLength(comments[testuser]))
     '''
+
+    # Analyzing most used negative words across all users.
+    # all_neg_words = []
+    # for user in comments:
+    #     for word in getWordTokens(comments[user]):
+    #         if word in negWords:
+    #             all_neg_words.append(word)
+
+    # print nltk.FreqDist(all_neg_words)
