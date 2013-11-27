@@ -226,13 +226,13 @@ def get_model(all_contributor_metrics,metric_name, metric_list, metric_place):
                     metric_val = int(metrics[metric_place])            
                     if int(metric_val) in cluster[1]:
                         if num==0:
-                            model_file.write(user+ str(metric_val)+"\t"+ "low")
+                            model_file.write(user+ "\t"+ str(metric_val)+"\t"+ "low")
                         elif num==1:
-                            model_file.write(user+  str(metric_val)+ "\t"+ "medium")
+                            model_file.write(user+ "\t"+  str(metric_val)+ "\t"+ "medium")
                         elif num==2:
-                            model_file.write(user+  str(metric_val)+ "\t"+ "high")
+                            model_file.write(user+ "\t"+  str(metric_val)+ "\t"+ "high")
                         elif num==3:
-                            model_file.write(user+  str(metric_val)+ "\t"+ "very_high")  
+                            model_file.write(user+  "\t"+ str(metric_val)+ "\t"+ "very_high")  
 
                         model_file.write("\n")
     except Exception, e:        
