@@ -273,134 +273,20 @@ def print_classifier_group_model():
 
     #print  list_commit_cnt,list_commit_add_del, list_issue_open_close , list_issue_comment_cnt , list_pull_open_close 
 
+    #intially thought of using median, but later used k-means which is better for getting groups
     #midpt = len(list_commit_cnt)/2
     #median_commit_cnt = sorted(list_commit_cnt)[midpt]
     #median_commit_add_del = sorted(list_commit_add_del)[midpt]
     #median_issue_open_close = sorted(list_issue_open_close)[midpt]
     #median_issue_comment_cnt = sorted(list_issue_comment_cnt)[midpt]
     #median_pull_open_close = sorted(list_pull_open_close)[midpt]
+    
     print  all_contributor_metrics
     get_model(all_contributor_metrics,"commit_cnt", list_commit_cnt, 0)
     get_model(all_contributor_metrics,"commit_add_del", list_commit_add_del, 1)
     get_model(all_contributor_metrics,"issue_open_close", list_issue_open_close, 2)
     get_model(all_contributor_metrics,"issue_comment_cnt", list_issue_comment_cnt, 3)
     get_model(all_contributor_metrics,"pull_open_close", list_pull_open_close, 4)
-
-
-
-
-
-    #""" Model 2: commit_add_del"""    
-    #print " Model 2: commit_add_del"
-    #model_commit_cnt = codecs.open("model_commit_add_del.tsv", 'w',  "UTF-8") 
-    #try:
-        #status, final_centroids, final_clusters = github_kmeans.find_centroids_clusters(list_commit_add_del,4)
-        #if status == "error":
-            #print "ERROR in commit_add_del"
-        #else:
-            #centroids_clusters = sorted(zip(final_centroids, final_clusters))        
-            #for user,metrics in all_contributor_metrics.items():
-                #for num, cluster in enumerate(centroids_clusters):
-                    #metric_val = int(metrics[1])
-                    #if int(metric_val) in cluster[1]:
-                        #if num==0:
-                            #model_commit_cnt.write(user+ str(metric_val)+"\t"+ "low")
-                        #elif num==1:
-                            #model_commit_cnt.write(user+  str(metric_val)+ "\t"+ "medium")
-                        #elif num==2:
-                            #model_commit_cnt.write(user+  str(metric_val)+ "\t"+ "high")
-                        #elif num==3:
-                            #model_commit_cnt.write(user+  str(metric_val)+ "\t"+ "very_high")  
-
-                        #model_commit_cnt.write("\n")
-    #except Exception, e:        
-        #print "Error in: commit_add_del"
-        #print  e      
-    #model_commit_cnt.close()
-
-    #""" Model 3: issue_open_close"""    
-    #print " Model 3: issue_open_close"
-    #model_commit_cnt = codecs.open("model_issue_open_close.tsv", 'w',  "UTF-8") 
-    #try:
-        #status, final_centroids, final_clusters = github_kmeans.find_centroids_clusters(list_issue_open_close,4)
-        #if status == "error":
-            #print "ERROR in issue_open_close"
-        #else:
-            #centroids_clusters = sorted(zip(final_centroids, final_clusters))        
-            #for user,metrics in all_contributor_metrics.items():
-                #for num, cluster in enumerate(centroids_clusters):
-                    #metric_val = int(metrics[2])
-                    #if int(metric_val) in cluster[1]:
-                        #if num==0:
-                            #model_commit_cnt.write(user+ str(metric_val)+"\t"+ "low")
-                        #elif num==1:
-                            #model_commit_cnt.write(user+  str(metric_val)+ "\t"+ "medium")
-                        #elif num==2:
-                            #model_commit_cnt.write(user+  str(metric_val)+ "\t"+ "high")
-                        #elif num==3:
-                            #model_commit_cnt.write(user+  str(metric_val)+ "\t"+ "very_high")  
-
-                        #model_commit_cnt.write("\n")
-    #except Exception, e:        
-        #print "Error in: issue_open_close"
-        #print  e      
-    #model_commit_cnt.close()
-
-    #""" Model 4: issue_comment_cnt """    
-    #print " Model 4: issue_comment_cnt "
-    #model_commit_cnt = codecs.open("model_issue_comment_cnt .tsv", 'w',  "UTF-8") 
-    #try:
-        #status, final_centroids, final_clusters = github_kmeans.find_centroids_clusters(list_issue_comment_cnt ,4)
-        #if status == "error":
-            #print "ERROR in issue_comment_cnt "
-        #else:
-            #centroids_clusters = sorted(zip(final_centroids, final_clusters))        
-            #for user,metrics in all_contributor_metrics.items():
-                #for num, cluster in enumerate(centroids_clusters):
-                    #metric_val = int(metrics[3])
-                    #if int(metric_val) in cluster[1]:
-                        #if num==0:
-                            #model_commit_cnt.write(user+ str(metric_val)+"\t"+ "low")
-                        #elif num==1:
-                            #model_commit_cnt.write(user+  str(metric_val)+ "\t"+ "medium")
-                        #elif num==2:
-                            #model_commit_cnt.write(user+  str(metric_val)+ "\t"+ "high")
-                        #elif num==3:
-                            #model_commit_cnt.write(user+  str(metric_val)+ "\t"+ "very_high")  
-
-                        #model_commit_cnt.write("\n")
-    #except Exception, e:        
-        #print "Error in: issue_comment_cnt "
-        #print  e      
-    #model_commit_cnt.close() 
-
-    #""" Model 5: pull_open_close """    
-    #print " Model 5: pull_open_close "
-    #model_commit_cnt = codecs.open("model_pull_open_close .tsv", 'w',  "UTF-8") 
-    #try:
-        #status, final_centroids, final_clusters = github_kmeans.find_centroids_clusters(list_pull_open_close ,4)
-        #if status == "error":
-            #print "ERROR in pull_open_close "
-        #else:
-            #centroids_clusters = sorted(zip(final_centroids, final_clusters))        
-            #for user,metrics in all_contributor_metrics.items():
-                #for num, cluster in enumerate(centroids_clusters):
-                    #metric_val = int(metrics[4])
-                    #if int(metric_val) in cluster[1]:
-                        #if num==0:
-                            #model_commit_cnt.write(user+ str(metric_val)+"\t"+ "low")
-                        #elif num==1:
-                            #model_commit_cnt.write(user+  str(metric_val)+ "\t"+ "medium")
-                        #elif num==2:
-                            #model_commit_cnt.write(user+  str(metric_val)+ "\t"+ "high")
-                        #elif num==3:
-                            #model_commit_cnt.write(user+  str(metric_val)+ "\t"+ "very_high")  
-
-                        #model_commit_cnt.write("\n")
-    #except Exception, e:        
-        #print "Error in: pull_open_close "
-        #print  e      
-    #model_commit_cnt.close()        
 
     #for classifier_grp in [list_commit_cnt,list_commit_add_del, list_issue_open_close , list_issue_comment_cnt , list_pull_open_close ]:
         #try:
