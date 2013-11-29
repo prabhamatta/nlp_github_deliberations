@@ -21,13 +21,13 @@ def getUsersComments(f):
     users_comments = {}
     for line in f.readlines():
         data = line.split('\t')
-        user = data[3]
+        user = data[4]
         if user != 'BitcoinPullTester':
             if user not in users_comments:
-                comment_list = [data[4]]
+                comment_list = [data[5]]
                 users_comments[user] = comment_list
             else:
-                users_comments[user].append(data[4])
+                users_comments[user].append(data[5])
     return users_comments
 
 
