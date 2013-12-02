@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import nltk
-from features import getUsersComments, getUnusualWordCount, getPosWordCount, getNegWordCount, getTotalPunctuation, getWhQuestionCount, getTotalWordsUsed, getAvgWordLength, getAvgNumWordsInComment, getAvgNumWordsInSent, getAvgNumSentences, getMaxCommentLength, getAvgCommentLength, hasPlusOne, hasPosSmiley, hasNegSmiley
+from features import getUsersComments, getMentionsUsersComments, getUnusualWordCount, getPosWordCount, getNegWordCount, getTotalPunctuation, getWhQuestionCount, getTotalWordsUsed, getAvgWordLength, getAvgNumWordsInComment, getAvgNumWordsInSent, getAvgNumSentences, getMaxCommentLength, getAvgCommentLength, hasPlusOne, hasPosSmiley, hasNegSmiley
 import codecs
 import time
 
@@ -27,7 +27,7 @@ def get_activity_levels(begin, end):
 
   return users, user_activity_levels
 
-def get_user_comment_features(users, comments, begin, end):
+def get_user_comment_features(users, comments, begin, end, tag=''):
   # TODO: now we just use the file already generated, without caring time period
   user_comment_features = {}
   for user in users:
@@ -36,24 +36,21 @@ def get_user_comment_features(users, comments, begin, end):
 
     features = {}
     #features['unusual'] = getUnusualWordCount(comments[user]) //commented for now, since porter stemmer is taking too long time
-    features['positive'] = getPosWordCount(comments[user])
-    features['negative'] = getNegWordCount(comments[user])
-    features['punctuation'] = getTotalPunctuation(comments[user])
-    features['question'] = getWhQuestionCount(comments[user])
-    features['wordused'] = getTotalWordsUsed(comments[user])
-    features['wordlen'] = getAvgWordLength(comments[user])
-    features['wordcomments'] = getAvgNumWordsInComment(comments[user])
-    features['wordsentences'] = getAvgNumWordsInSent(comments[user])
-    features['numsent'] = getAvgNumSentences(comments[user])
-    features['maxcommentlen'] = getMaxCommentLength(comments[user])
-    features['avgcommentlen'] = getAvgCommentLength(comments[user])
+    features[tag+'positive'] = getPosWordCount(comments[user])
+    features[tag+'negative'] = getNegWordCount(comments[user])
+    features[tag+'punctuation'] = getTotalPunctuation(comments[user])
+    features[tag+'question'] = getWhQuestionCount(comments[user])
+    features[tag+'wordused'] = getTotalWordsUsed(comments[user])
+    features[tag+'wordlen'] = getAvgWordLength(comments[user])
+    features[tag+'wordcomments'] = getAvgNumWordsInComment(comments[user])
+    features[tag+'wordsentences'] = getAvgNumWordsInSent(comments[user])
+    features[tag+'numsent'] = getAvgNumSentences(comments[user])
+    features[tag+'maxcommentlen'] = getMaxCommentLength(comments[user])
+    features[tag+'avgcommentlen'] = getAvgCommentLength(comments[user])
     
-    features['hasPlusOne'] = hasPlusOne(comments[user])
-    features['hasPosSmiley'] = hasPosSmiley(comments[user])
-    features['hasNegSmiley'] = hasNegSmiley(comments[user])
-    
-    
-    
+    features[tag+'hasPlusOne'] = hasPlusOne(comments[user])
+    features[tag+'hasPosSmiley'] = hasPosSmiley(comments[user])
+    features[tag+'hasNegSmiley'] = hasNegSmiley(comments[user])
 
     user_comment_features[user] = features
     #print user_comment_features
@@ -74,6 +71,8 @@ if __name__=='__main__':
 
   # get all comments in a time period (and group with users)
   # user_comment = comments[user]
+  
+  """collecting features from comments for the user"""  
   #f = open('issues_conversation_details_all.tsv','r')
   f = open('test_issues.tsv','r')
   
@@ -85,13 +84,26 @@ if __name__=='__main__':
   user_comment_features = get_user_comment_features(users, comments, begin, end)
   #print user_comment_features
 
+
+  """collecting features from mention conversations for the user"""
+  #fmentions = open('mentions_conversation_details_all.tsv','r')
+  fmentions = open('test_mentions.tsv','r')
+  
+  mention_comments = getMentionsUsersComments(fmentions)
+  tag = 'mentions_'
+  mention_user_comment_features = get_user_comment_features(users, mention_comments, begin, end,tag)
+  #print mention_user_comment_features  
+  user_comment_features.update(mention_user_comment_features)
+
+
+
   classifier = {}
   for model in MODELS:
     # train_set format: [(feature_dict1, level1), (feature_dict2, level2), ...]
     train_set = []
     for user, features in user_comment_features.iteritems():
       train_set.append((features, user_activity_levels[user][model]))
-    print train_set
+    #print train_set
 
     # train the classifier of the model
     classifier[model] = nltk.NaiveBayesClassifier.train(train_set)
