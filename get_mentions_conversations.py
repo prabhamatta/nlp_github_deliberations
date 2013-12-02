@@ -9,8 +9,6 @@ from datetime import datetime
 import time
 from pprint import pprint
 import nltk
-from bs4 import BeautifulSoup
-from markdown import markdown
 
 
 
@@ -18,11 +16,10 @@ def mention_conversation_analyzation():
     print "Entered mention_conversation_analyzation..."
 
     mentions_conversation_details_all = codecs.open("mentions_conversation_details_all.tsv", 'w',  "UTF-8")     
-    #fnames = ["issues_conversation_details_all.tsv"]  
-    fnames = ["test.tsv"]      
+    fnames = ["issues_conversation_details_all.tsv"]  
     for fname in fnames:
         with codecs.open(fname, 'r',  "UTF-8") as fin:
-            mentions_conversation_details_all.write( "issue_id"+"\t"  +"comment_id"+"\t" +"comment_url"+"\t"+ "comment_user"+"\t" + "mentioned_user"+"\t" "comment_text" +"\n")
+            mentions_conversation_details_all.write( "issue_id"+"\t"  +"comment_id"+"\t" +"created_at"+"\t"  +"comment_url"+"\t"+ "comment_user"+"\t" + "mentioned_user"+"\t" "comment_text" +"\n")
             for line in fin:
                 try:
                     split_list  = line.strip().split("\t")
@@ -35,16 +32,17 @@ def mention_conversation_analyzation():
                                 mentioned_user = word.replace("@","")
                                 mentioned_user = mentioned_user.replace(":","") 
 
-                                print mentioned_user
+                                #print mentioned_user
                                 if mentioned_user == "":
                                     break
 
                                 issue_id = split_list[0]
                                 comment_id = split_list[1]
+                                created_at = split_list[2]
                                 comment_url = split_list[3]
                                 comment_user = split_list[4]
 
-                                mentions_conversation_details_all.write( str(issue_id)+"\t"  +str(comment_id)+"\t" +str(comment_url)+"\t"+ str(comment_user)+"\t" + str(mentioned_user)+"\t" +   str(comment_text) +"\n")
+                                mentions_conversation_details_all.write( str(issue_id)+"\t"  +str(comment_id)+"\t"  + str(created_at) +"\t" +str(comment_url)+"\t"+ str(comment_user)+"\t" + str(mentioned_user)+"\t" +   str(comment_text) +"\n")
 
 
                     #issues_conversation_text.write(str(issue_id)+"\t"  +str(comment_id)+"\t" +str(comment_url)+"\t"+ str(comment_user)+"\t" + str(comment_text) +"\n")

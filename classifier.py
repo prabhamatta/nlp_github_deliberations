@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import nltk
-from features import getUsersComments, getUnusualWordCount, getPosWordCount, getNegWordCount, getTotalPunctuation, getWhQuestionCount, getTotalWordsUsed, getAvgWordLength, getAvgNumWordsInComment, getAvgNumWordsInSent, getAvgNumSentences, getMaxCommentLength, getAvgCommentLength
+from features import getUsersComments, getUnusualWordCount, getPosWordCount, getNegWordCount, getTotalPunctuation, getWhQuestionCount, getTotalWordsUsed, getAvgWordLength, getAvgNumWordsInComment, getAvgNumWordsInSent, getAvgNumSentences, getMaxCommentLength, getAvgCommentLength, hasPlusOne, hasPosSmiley, hasNegSmiley
 import codecs
 import time
 
@@ -35,7 +35,7 @@ def get_user_comment_features(users, comments, begin, end):
       continue
 
     features = {}
-    features['unusual'] = getUnusualWordCount(comments[user])
+    #features['unusual'] = getUnusualWordCount(comments[user]) //commented for now, since porter stemmer is taking too long time
     features['positive'] = getPosWordCount(comments[user])
     features['negative'] = getNegWordCount(comments[user])
     features['punctuation'] = getTotalPunctuation(comments[user])
@@ -47,6 +47,13 @@ def get_user_comment_features(users, comments, begin, end):
     features['numsent'] = getAvgNumSentences(comments[user])
     features['maxcommentlen'] = getMaxCommentLength(comments[user])
     features['avgcommentlen'] = getAvgCommentLength(comments[user])
+    
+    features['hasPlusOne'] = hasPlusOne(comments[user])
+    features['hasPosSmiley'] = hasPosSmiley(comments[user])
+    features['hasNegSmiley'] = hasNegSmiley(comments[user])
+    
+    
+    
 
     user_comment_features[user] = features
     #print user_comment_features
@@ -67,7 +74,9 @@ if __name__=='__main__':
 
   # get all comments in a time period (and group with users)
   # user_comment = comments[user]
-  f = open('issues_conversation_details_all.tsv','r')
+  #f = open('issues_conversation_details_all.tsv','r')
+  f = open('test_issues.tsv','r')
+  
   comments = getUsersComments(f)
   #print comments
 
