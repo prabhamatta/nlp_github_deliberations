@@ -31,16 +31,37 @@ def getUsersComments(f):
     return users_comments
 
 
+
+'''-----------------------For @mentions: build dict of other users comments----------------------'''
+
+def getMentionsUsersComments(f):
+    """ Creates dictionary where key is a username and the value
+        is a list of the comments where this user is mentioned. """
+    users_comments = {}
+    for line in f.readlines():
+        data = line.split('\t')
+        user = data[5]
+        if user not in users_comments:
+            comment_list = [data[6]]
+            users_comments[user] = comment_list
+        else:
+            users_comments[user].append(data[6])
+    return users_comments
+
+
 '''----------------------------feature functions----------------------------'''
 
 def getAvgCommentLength(comment_list):
     """ Get average length (char) of a users comments """
+    """TODO : average num of words of users comments"""
     total = sum([len(comment) for comment in comment_list])
     return float(total) / len(comment_list)
 
 
 def getMaxCommentLength(comment_list):
     """ Get length of longest comment from a user """
+    """TODO : longest num of words in a comment from a user"""
+    
     return max([len(comment) for comment in comment_list])
 
 

@@ -93,7 +93,12 @@ if __name__=='__main__':
   tag = 'mentions_'
   mention_user_comment_features = get_user_comment_features(users, mention_comments, begin, end,tag)
   #print mention_user_comment_features  
-  user_comment_features.update(mention_user_comment_features)
+  for user, features in user_comment_features.items():
+    try:
+      features.update(mention_user_comment_features[user])
+    except:
+      pass
+  #user_comment_features.update(mention_user_comment_features)
 
 
 
