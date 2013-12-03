@@ -202,7 +202,7 @@ def hasNegSmiley(comment_list):
     val = 0
     for comment in comment_list:
         for word in nltk.tokenize.word_tokenize(comment):
-            if word in [':-(', ':(']:
+            if word in [':-(', ':(', ':/', ':-/']:
                 val = 1
                 return val
     return val
