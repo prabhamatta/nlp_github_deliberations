@@ -1,0 +1,344 @@
+[(u'diapolo', 159),
+ (u'gavinandresen', 122),
+ (u'sipa', 107),
+ (u'jgarzik', 94),
+ (u'gmaxwell', 87),
+ (u'luke-jr', 87),
+ (u'laanwj', 85),
+ (u'petertodd', 50),
+ (u'thebluematt', 41),
+ (u'mikehearn', 33),
+ (u'rebroad', 31),
+ (u'sergiodemianlerner', 15),
+ (u'codeshark', 12),
+ (u'jonasschnelli', 12),
+ (u'wtogami', 11),
+ (u'qubez', 9),
+ (u'schildbach', 8),
+ (u'dooglus', 6),
+ (u'theuni', 6),
+ (u'bitcoinpulltester', 5),
+ (u'edam', 5),
+ (u'goonie', 5),
+ (u'johndillon', 5),
+ (u'nemysis', 5),
+ (u'toffoo', 5),
+ (u'cozz', 4),
+ (u'rdponticelli', 4),
+ (u'rofl0r', 4),
+ (u'sje397', 4),
+ (u'suffice', 4),
+ (u'allthingsbitcoin', 3),
+ (u'brandondahler', 3),
+ (u'denis2342', 3),
+ (u'drak', 3),
+ (u'idiotsabound', 3),
+ (u'jrmithdobbs', 3),
+ (u'kyledrake', 3),
+ (u'lohoris', 3),
+ (u'p2k', 3),
+ (u'paraboul', 3),
+ (u'paraipan', 3),
+ (u'robbak', 3),
+ (u'roconnor', 3),
+ (u'vladgiurgiubv', 3),
+ (u'xanatos', 3),
+ (u'xcaninox', 3),
+ (u'63', 2),
+ (u'aperson241', 2),
+ (u'bluematt', 2),
+ (u'cjastram', 2),
+ (u'dacoinminster', 2),
+ (u'echo', 2),
+ (u'falinatecas', 2),
+ (u'fanquake', 2),
+ (u'gruez', 2),
+ (u'gyver', 2),
+ (u'hrobbins', 2),
+ (u'jeffmendoza', 2),
+ (u'kuzetsa', 2),
+ (u'l2g', 2),
+ (u'm4v3r', 2),
+ (u'mikegogulski', 2),
+ (u'pentarh', 2),
+ (u'pstratem', 2),
+ (u'sje1', 2),
+ (u'slothbag', 2),
+ (u'soulhunter', 2),
+ (u'soundasleep', 2),
+ (u'tcatm', 2),
+ (u'turkeyman', 2),
+ (u'vinniefalco', 2),
+ (u'wumpus', 2),
+ (u'2.0.11', 1),
+ (u'2.2.0', 1),
+ (u'3.2.2', 1),
+ (u'adrelanos', 1),
+ (u'aeyoun', 1),
+ (u'ag346', 1),
+ (u'ahdinosaur', 1),
+ (u'alanast1', 1),
+ (u'alexgenaud', 1),
+ (u'anarcat', 1),
+ (u'apoelstra', 1),
+ (u'ashleyholman', 1),
+ (u'awishformore', 1),
+ (u'bitcoinstarter', 1),
+ (u'bobalot', 1),
+ (u'boltblit', 1),
+ (u'bondbeau', 1),
+ (u'burger2', 1),
+ (u'bytemaster', 1),
+ (u'casascius', 1),
+ (u'cjdelisle', 1),
+ (u'clopez', 1),
+ (u'coderrr', 1),
+ (u'cryddit', 1),
+ (u'diapolo?', 1),
+ (u'doublec', 1),
+ (u'dscotese', 1),
+ (u'eldentyrell', 1),
+ (u'enelar', 1),
+ (u'eurekafag', 1),
+ (u'forrestv', 1),
+ (u'fredan', 1),
+ (u'frespa81', 1),
+ (u'gavin', 1),
+ (u'graingert', 1),
+ (u'grayleonard', 1),
+ (u'hank', 1),
+ (u'imton', 1),
+ (u'interfect', 1),
+ (u'jbreher', 1),
+ (u'jeremysawicki', 1),
+ (u'jevonx', 1),
+ (u'jmack', 1),
+ (u'joelkatz', 1),
+ (u'keo', 1),
+ (u'keystrike', 1),
+ (u'kjj', 1),
+ (u'lachesis', 1),
+ (u'lano1106', 1),
+ (u'lzrloveyou', 1),
+ (u'maaku', 1),
+ (u'mai77', 1),
+ (u'makomk', 1),
+ (u'matoking', 1),
+ (u'mazo', 1),
+ (u'medicinebottle', 1),
+ (u'midnightmagic', 1),
+ (u'mikehern', 1),
+ (u'molecular', 1),
+ (u'msva', 1),
+ (u'narufgt', 1),
+ (u'neofutur', 1),
+ (u'nikolajsheller', 1),
+ (u'nmarley', 1),
+ (u'pascalbokbok', 1),
+ (u'petertodd)', 1),
+ (u'philip', 1),
+ (u'piratelinux', 1),
+ (u'plaid', 1),
+ (u'poes', 1),
+ (u'polyergic', 1),
+ (u'prusnak', 1),
+ (u'pszturmaj', 1),
+ (u'robzrob', 1),
+ (u'roques', 1),
+ (u'runeksvendsen', 1),
+ (u'ryepdx', 1),
+ (u'satoshiroulette', 1),
+ (u'schmollen', 1),
+ (u'shadders', 1),
+ (u'simondlr', 1),
+ (u'sip', 1),
+ (u'sjors', 1),
+ (u'skruger', 1),
+ (u'squeezle42', 1),
+ (u'srs96', 1),
+ (u'ssokolow', 1),
+ (u'stuhood', 1),
+ (u'substrata', 1),
+ (u'super3', 1),
+ (u'thepiachu', 1),
+ (u'timsk', 1),
+ (u'timwi', 1),
+ (u'tobypinder', 1),
+ (u'wakimiko', 1),
+ (u'weex', 1),
+ (u'whitslack', 1),
+ (u'wizeman', 1),
+ (u'wowus', 1),
+ (u'xmj', 1)]
+diapolo	159
+gavinandresen	122
+sipa	107
+jgarzik	94
+gmaxwell	87
+luke-jr	87
+laanwj	85
+petertodd	50
+thebluematt	41
+mikehearn	33
+rebroad	31
+sergiodemianlerner	15
+codeshark	12
+jonasschnelli	12
+wtogami	11
+qubez	9
+schildbach	8
+dooglus	6
+theuni	6
+bitcoinpulltester	5
+edam	5
+goonie	5
+johndillon	5
+nemysis	5
+toffoo	5
+cozz	4
+rdponticelli	4
+rofl0r	4
+sje397	4
+suffice	4
+allthingsbitcoin	3
+brandondahler	3
+denis2342	3
+drak	3
+idiotsabound	3
+jrmithdobbs	3
+kyledrake	3
+lohoris	3
+p2k	3
+paraboul	3
+paraipan	3
+robbak	3
+roconnor	3
+vladgiurgiubv	3
+xanatos	3
+xcaninox	3
+63	2
+aperson241	2
+bluematt	2
+cjastram	2
+dacoinminster	2
+echo	2
+falinatecas	2
+fanquake	2
+gruez	2
+gyver	2
+hrobbins	2
+jeffmendoza	2
+kuzetsa	2
+l2g	2
+m4v3r	2
+mikegogulski	2
+pentarh	2
+pstratem	2
+sje1	2
+slothbag	2
+soulhunter	2
+soundasleep	2
+tcatm	2
+turkeyman	2
+vinniefalco	2
+wumpus	2
+2.0.11	1
+2.2.0	1
+3.2.2	1
+adrelanos	1
+aeyoun	1
+ag346	1
+ahdinosaur	1
+alanast1	1
+alexgenaud	1
+anarcat	1
+apoelstra	1
+ashleyholman	1
+awishformore	1
+bitcoinstarter	1
+bobalot	1
+boltblit	1
+bondbeau	1
+burger2	1
+bytemaster	1
+casascius	1
+cjdelisle	1
+clopez	1
+coderrr	1
+cryddit	1
+diapolo?	1
+doublec	1
+dscotese	1
+eldentyrell	1
+enelar	1
+eurekafag	1
+forrestv	1
+fredan	1
+frespa81	1
+gavin	1
+graingert	1
+grayleonard	1
+hank	1
+imton	1
+interfect	1
+jbreher	1
+jeremysawicki	1
+jevonx	1
+jmack	1
+joelkatz	1
+keo	1
+keystrike	1
+kjj	1
+lachesis	1
+lano1106	1
+lzrloveyou	1
+maaku	1
+mai77	1
+makomk	1
+matoking	1
+mazo	1
+medicinebottle	1
+midnightmagic	1
+mikehern	1
+molecular	1
+msva	1
+narufgt	1
+neofutur	1
+nikolajsheller	1
+nmarley	1
+pascalbokbok	1
+petertodd)	1
+philip	1
+piratelinux	1
+plaid	1
+poes	1
+polyergic	1
+prusnak	1
+pszturmaj	1
+robzrob	1
+roques	1
+runeksvendsen	1
+ryepdx	1
+satoshiroulette	1
+schmollen	1
+shadders	1
+simondlr	1
+sip	1
+sjors	1
+skruger	1
+squeezle42	1
+srs96	1
+ssokolow	1
+stuhood	1
+substrata	1
+super3	1
+thepiachu	1
+timsk	1
+timwi	1
+tobypinder	1
+wakimiko	1
+weex	1
+whitslack	1
+wizeman	1
+wowus	1
+xmj	1

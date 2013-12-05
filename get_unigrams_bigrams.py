@@ -76,7 +76,7 @@ def get_freq_bigram(comments, get_stem=False, get_tag=False, flt_stop_words=Fals
     return nltk.FreqDist(bigrams).keys()[:freq_gram_cnt]
 
 
-    if __name__=='__main__':
+if __name__=='__main__':
     # if there are command line arguments, the first one will be 'gram_choice'
     # and the second one will be 'freq_gram_cnt'
     if len(sys.argv) > 1:
