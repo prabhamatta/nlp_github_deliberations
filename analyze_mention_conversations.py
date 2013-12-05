@@ -25,7 +25,6 @@ def get_top_mentioned_users(mention_conversations):
         comment = line_split[6]
         mentioned_users_list.append(mentioned_user)
     fq = nltk.FreqDist(mentioned_users_list)
-    pprint(fq.items())
     for k,v in fq.items():
         print str(k)+"\t"+str(v)
         
@@ -38,7 +37,6 @@ def get_mentioned_by_core(mention_conversations, core):
             mentioned_user = clean_user(line_split[5].lower())
             mentioned_users_list.append(mentioned_user)
     fq = nltk.FreqDist(mentioned_users_list)
-    pprint(fq.items())
     for k,v in fq.items():
         print str(k)+"\t"+str(v)
                 
@@ -51,13 +49,13 @@ if __name__ == '__main__':
     """
     get top mentioned users
     """    
-    #get_top_mentioned_users(mention_conversations)
+    get_top_mentioned_users(mention_conversations)
     
     """
     get users mentioned by  core colloborators
     """       
-    core = ["gavinandresen","gmaxwell","jgarzik", "laanwj", "sipa", "tcatm"]
-    get_mentioned_by_core(mention_conversations, core)
+    #core = ["gavinandresen","gmaxwell","jgarzik", "laanwj", "sipa", "tcatm"]
+    #get_mentioned_by_core(mention_conversations, core)
     
     mention_conversations.close()
     
