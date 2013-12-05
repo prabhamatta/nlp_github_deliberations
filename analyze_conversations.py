@@ -16,6 +16,9 @@ def clean_user(user):
     return user
 
 def get_top_mentioned_users(mention_conversations):
+    """    
+       get_top_mentioned_users(mention_conversations)
+    """    
     mentioned_users_list =[]
     for line in mention_conversations:
         line_split = line.strip().split("\t")
@@ -29,6 +32,9 @@ def get_top_mentioned_users(mention_conversations):
         print str(k)+"\t"+str(v)
         
 def get_mentioned_by_core(mention_conversations, core):
+    """
+    get users mentioned by  core colloborators
+    """     
     mentioned_users_list =[]
     for line in mention_conversations:
         line_split = line.strip().split("\t")
@@ -40,8 +46,8 @@ def get_mentioned_by_core(mention_conversations, core):
     for k,v in fq.items():
         print str(k)+"\t"+str(v)
                 
-
-
+        
+    
 
 if __name__ == '__main__':
     mention_conversations = codecs.open("mentions_conversation_details_all.tsv", 'r',  "UTF-8") 
@@ -49,14 +55,20 @@ if __name__ == '__main__':
     """
     get top mentioned users
     """    
-    get_top_mentioned_users(mention_conversations)
+    #get_top_mentioned_users(mention_conversations)
     
     """
     get users mentioned by  core colloborators
     """       
     #core = ["gavinandresen","gmaxwell","jgarzik", "laanwj", "sipa", "tcatm"]
     #get_mentioned_by_core(mention_conversations, core)
+    #mention_conversations.close()
     
-    mention_conversations.close()
     
-
+    ##"""
+    #get top commented users
+    #"""    
+    ##get_top_commented_users(mention_conversations)  
+    
+    
+  

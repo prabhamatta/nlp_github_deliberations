@@ -304,6 +304,40 @@ def getPagedRequest(url):
     return results
 
 
+
+
+
+def add_main_pull_comment_into_pull_conversations():
+    """
+    Do not remove this function
+    Adding main pull request conversation into pull_conversations"""
+    f_write = codecs.open("pulls_conversation_details_all.tsv", 'a+',  "UTF-8")     
+    files = ["old_code/pulls_all_open.tsv", "old_code/pulls_all_closed.tsv"]
+    for f in files:
+        f_read = codecs.open(f, 'r',  "UTF-8")
+        for line in f_read:
+            line_split = line.strip().split("\t")
+            f_write.write(line_split[0]+"\t"+line_split[1]+ "\t"+line_split[6]+ "\t"+line_split[4]+ "\t" + line_split[2]+ "\t"+ line_split[3]+ "\n")
+        f_read.close()
+    f_write.close()
+    
+            
+
+def add_main_issue_comment_into_issue_conversations():
+    """
+    Do not remove this function
+    Adding main pull request conversation into pull_conversations"""
+    f_write = codecs.open("issues_conversation_details_all.tsv", 'a+',  "UTF-8")     
+    files = ["old_code/issues_all_open.tsv", "old_code/issues_all_closed.tsv"]
+    for f in files:
+        f_read = codecs.open(f, 'r',  "UTF-8")
+        for line in f_read:
+            line_split = line.strip().split("\t")
+            f_write.write(line_split[0]+"\t"+line_split[1]+ "\t"+line_split[7]+ "\t"+line_split[4]+ "\t" + line_split[2]+ "\t"+ line_split[3]+ "\n")
+        f_read.close()
+    f_write.close()
+           
+           
 if __name__ == '__main__':
     project = "bitcoin"
     repo = "bitcoin"
@@ -337,9 +371,14 @@ if __name__ == '__main__':
     """
     get individual comments of each conversation of each pull request
     """    
-    getPullsConversations(main_url)
+    #getPullsConversations(main_url)
     
 
     #testtext = "heloworld. \r\n what! is this @pmatta \n /*this is the*/ hello\n and http://github.com this is world\n "
     #print text_cleanup(testtext)
     #test()
+    
+    #add_main_pull_comment_into_pull_conversations()
+    #add_main_issue_comment_into_issue_conversations()
+
+    
