@@ -46,8 +46,24 @@ def get_mentioned_by_core(mention_conversations, core):
     for k,v in fq.items():
         print str(k)+"\t"+str(v)
                 
-        
+def get_top_users_comments():
+    """ get top users comment num in pull/issue converstaions"""
     
+    files_tag = ["issues", "pulls"]
+    for tag in files_tag:
+        f_read = codecs.open(tag+"_conversation_details_all.tsv", 'r',  "UTF-8")
+        f_write = codecs.open("top_"+tag+"_comments_users.tsv", 'w',  "UTF-8") 
+        users_list = []        
+        for line in f_read:
+            line_split = line.strip().split("\t")    
+            user = clean_user(line_split[4].lower())
+            users_list.append(user)
+        fq = nltk.FreqDist(users_list)
+        for k,v in fq.items():
+            f_write.write(str(k)+"\t"+str(v)+"\n")
+        f_write.close()
+            
+
 
 if __name__ == '__main__':
     mention_conversations = codecs.open("mentions_conversation_details_all.tsv", 'r',  "UTF-8") 
@@ -63,12 +79,11 @@ if __name__ == '__main__':
     #core = ["gavinandresen","gmaxwell","jgarzik", "laanwj", "sipa", "tcatm"]
     #get_mentioned_by_core(mention_conversations, core)
     #mention_conversations.close()
-    
-    
+
     ##"""
     #get top commented users
     #"""    
     ##get_top_commented_users(mention_conversations)  
     
     
-  
+    get_top_users_comments()
