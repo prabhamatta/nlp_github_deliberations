@@ -128,8 +128,8 @@ def getWhQuestionCount(comment_list):
     num_wh = 0.0
     whQuestionWords = ['who','what','when','where','why', 'how']
     for comment in comment_list:
-        for eachword in [word for word in nltk.tokenize.word_tokenize(comment) if word.lower() in whQuestionWords]:
-            num_wh += 1
+        count = len([word for word in nltk.tokenize.word_tokenize(comment) if word.lower() in whQuestionWords])
+        num_wh += count
     return num_wh/len(comment_list)
 
 
@@ -139,8 +139,8 @@ def getI(comment_list):
     i_words = ["i", "me", "mine", "myself"]
     
     for comment in comment_list:
-        for eachword in [word for word in nltk.tokenize.word_tokenize(comment) if word.lower() in i_words]:
-            num_I += 1
+        count = len([word for word in nltk.tokenize.word_tokenize(comment) if word.lower() in i_words])
+        num_I += count
     return num_I/len(comment_list)
 
 
@@ -150,8 +150,8 @@ def getWe(comment_list):
     num_We = 0.0
     we_words = ["we", "us", "our", "ours"]
     for comment in comment_list:
-        for eachword in [word for word in nltk.tokenize.word_tokenize(comment) if word.lower() in we_words]:
-            num_We += 1
+        count = len([word for word in nltk.tokenize.word_tokenize(comment) if word.lower() in we_words])
+        num_We += count
     return num_We/len(comment_list)
 
 
@@ -160,8 +160,8 @@ def getYou(comment_list):
     num_you = 0.0
     you_words = ["you", "your", "yours", "your's"]
     for comment in comment_list:
-        for eachword in [word for word in nltk.tokenize.word_tokenize(comment) if word.lower() in you_words]:
-            num_you += 1
+        count = len([word for word in nltk.tokenize.word_tokenize(comment) if word.lower() in you_words])
+        num_you += count
     return num_you/len(comment_list)
 
 
@@ -170,23 +170,29 @@ def getSmileys(comment_list):
     num_smileys= 0.0
     smiley_words = [';)',':)', ':D', ':-)', ';-)']
     for comment in comment_list:
-        for eachword in [word for word in nltk.tokenize.word_tokenize(comment) if word.lower() in smiley_words]:
-            num_smileys += 1
+        count = len([word for word in nltk.tokenize.word_tokenize(comment) if word.lower() in smiley_words])
+        num_smileys += count
     return num_smileys/len(comment_list)
 
 
 def getPosWordCount(comment_list):
     """ returns number of positive words used in all of users comments
         words are from http://www.enchantedlearning.com/wordlist/positivewords.shtml """
-    words = getWordTokens(comment_list)
-    return float(len([word.lower() for word in words if word.lower() in posWords]))/len(comment_list)
+    num_pos = 0.0
+    for comment in comment_list:
+        count = len([word for word in nltk.tokenize.word_tokenize(comment) if word.lower() in posWords]) 
+        num_pos += count                  
+    return num_pos/len(comment_list)
+
 
 def getNegWordCount(comment_list):
     """ returns number of negative words used in all of users comments
         words are from http://www.enchantedlearning.com/wordlist/negativewords.shtml """
-    words = getWordTokens(comment_list)
-    return float(len([word for word in words if word.lower() in negWords]))/len(comment_list)
-
+    num_neg = 0.0
+    for comment in comment_list:
+        count = len([word for word in nltk.tokenize.word_tokenize(comment) if word.lower() in negWords]) 
+        num_neg += count    
+    return num_neg/len(comment_list)
 
 
 '''---------------------------add helper functions--------------------------'''
@@ -194,11 +200,6 @@ posWords = set(["absolutely", "adorable", "accepted", "acclaimed", "accomplish",
 
 negWords = set(["abysmal", "adverse", "alarming", "angry", "annoy", "anxious", "apathy", "appalling", "atrocious", "awful", "bad", "banal", "barbed", "belligerent", "bemoan", "beneath", "boring", "broken", "callous", "can't", "clumsy", "coarse", "cold", "cold-hearted", "collapse", "confused", "contradictory", "contrary", "corrosive", "corrupt", "crazy", "creepy", "criminal", "cruel", "cry", "cutting", "dead", "decaying", "damage", "damaging", "dastardly", "deplorable", "depressed", "deprived", "deformed", "deny", "despicable", "detrimental", "dirty", "disease", "disgusting", "disheveled", "dishonest", "dishonorable", "dismal", "distress", "don\'t", "dreadful", "dreary", "enraged", "eroding", "evil", "fail", "faulty", "fear", "feeble", "fight", "filthy", "foul", "frighten", "frightful", "gawky", "ghastly", "grave", "greed", "grim", "grimace", "gross", "grotesque", "gruesome", "guilty", "haggard", "hard", "hard-hearted", "harmful", "hate", "hideous", "homely", "horrendous", "horrible", "hostile", "hurt", "hurtful", "icky", "ignore", "ignorant", "immature", "imperfect", "impossible", "inane", "inelegant", "infernal", "injure", "injurious", "insane", "insidious", "insipid", "jealous", "junky", "lose", "lousy", "lumpy", "malicious", "mean", "menacing", "messy", "misshapen", "missing", "misunderstood", "moan", "moldy", "monstrous", "naive", "nasty", "naughty", "negate", "negative", "never", "no", "nobody", "nondescript", "nonsense", "not", "noxious", "objectionable", "odious", "offensive", "old", "oppressive", "pain", "perturb", "pessimistic", "petty", "plain", "poisonous", "poor", "prejudice", "questionable", "quirky", "quit", "reject", "renege", "repellant", "reptilian", "repulsive", "repugnant", "revenge", "revolting", "rocky", "rotten", "rude", "ruthless", "sad", "savage", "scare", "scary", "scream", "severe", "shoddy", "shocking", "sick", "sickening", "sinister", "slimy", "smelly", "sobbing", "sorry", "spiteful", "sticky", "stinky", "stormy", "stressful", "stuck", "stupid", "substandard", "suspect", "suspicious", "tense", "terrible", "terrifying", "threatening", "ugly", "undermine", "unfair", "unfavorable", "unhappy", "unhealthy", "unjust", "unlucky", "unpleasant", "upset", "unsatisfactory", "unsightly", "untoward", "unwanted", "unwelcome", "unwholesome", "unwieldy", "unwise", "upset", "vice", "vicious", "vile", "villainous", "vindictive", "wary", "weary", "wicked", "woeful", "worthless", "wound", "yell", "yucky", "zero"])
 
-
-def getWordTokens(comment_list):
-    """ takes list of comments and returns a list of tokens including words and punctuation """
-    all_comments = ''.join(comment_list)
-    return [word for word in nltk.tokenize.word_tokenize(all_comments)]
 
 
 '''-----------------------Analyzing comments----------------------'''        
@@ -438,18 +439,18 @@ def main():
     users_comments = get_users_comments()
     
     #project_stats(users_comments)
-    newcomers_all_stats(users_comments)
+    #newcomers_all_stats(users_comments)
     
-    core_noncore_stats(users_comments)
+    #core_noncore_stats(users_comments)
     core_diapolo_noncore_stats(users_comments)
-    mentions_nonmentions_stats(users_comments)
+    #mentions_nonmentions_stats(users_comments)
 
  
 
 if __name__ == '__main__':
  
-    #main()
+    main()
     #read_jsons()
-    get_top_users_comments()
+    #get_top_users_comments()
 
     
