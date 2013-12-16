@@ -1,1 +1,0 @@
-"bitcoins", "bitcoin", "block", "coin", "coins", "blocks", "chains", "chain", "BTC", "confirmation", "cryptography", "mining", "p2p", "private key", "signature", "wallet", "transaction", "xbt", "miner", "payment", "bitcoind", "transactions", "tumbler"
