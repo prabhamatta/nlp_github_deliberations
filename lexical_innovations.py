@@ -1,12 +1,14 @@
+""" Contains code for determining lexical innovations and for finding
+	  trends in linguistic style changes over time """
+
 import nltk
 import dateutil.parser
 import datetime
-import calendar
 from nltk.corpus import stopwords
 from nltk.tokenize import WordPunctTokenizer
 import string
 from collections import Counter
-from analyze_conversations import getSentPerComment, getWordsPerComment, getMentions, getI
+#from analyze_conversations import getSentPerComment, getWordsPerComment, getMentions, getI
 
 f = open("issues_conversation_details_all.tsv","r")
 
@@ -17,11 +19,7 @@ first_plural_pronouns = ["we", "our", "ours", "us", "ourselves"]
 second_pronouns = ["you", "your", "yours", "yourself", "yourselves"]
 core_collabs = ["gavinandresen", "gmaxwell", "jgarzik", "laanwj", "sipa", "tcatm"]
 whQuestionWords = ['who','what','when','where','why', 'how']
-posWords = set(["absolutely", "adorable", "accepted", "acclaimed", "accomplish", "accomplishment", "achievement", "action", "active", "admire", "adventure", "affirmative", "affluent", "agree", "agreeable", "amazing", "angelic", "appealing", "approve", "aptitude", "attractive", "awesome", "beaming", "beautiful", "believe", "beneficial", "bliss", "bountiful", "bounty", "brave", "bravo", "brilliant", "bubbly", "calm", "celebrated", "certain", "champ", "champion", "charming", "cheery", "choice", "classic", "classical", "clean", "commend", "composed", "congratulation", "constant", "cool", "courageous", "creative", "cute", "dazzling", "delight", "delightful", "distinguished", "divine", "earnest", "easy", "ecstatic", "effective", "effervescent", "efficient", "effortless", "electrifying", "elegant", "enchanting", "encouraging", "endorsed", "energetic", "energized", "engaging", "enthusiastic", "essential", "esteemed", "ethical", "excellent", "exciting", "exquisite", "fabulous", "fair", "familiar", "famous", "fantastic", "favorable", "fetching", "fine", "fitting", "flourishing", "fortunate", "free", "fresh", "friendly", "fun", "funny", "generous", "genius", "genuine", "giving", "glamorous", "glowing", "good", "gorgeous", "graceful", "great", "green", "grin", "growing", "handsome", "happy", "harmonious", "healing", "healthy", "hearty", "heavenly", "honest", "honorable", "honored", "hug", "idea", "ideal", "imaginative", "imagine", "impressive", "independent", "innovate", "innovative", "instant", "instantaneous", "instinctive", "intuitive", "intellectual", "intelligent", "inventive", "jovial", "joy", "jubilant", "keen", "kind", "knowing", "knowledgeable", "laugh", "legendary", "light", "learned", "lively", "lovely", "lucid", "lucky", "luminous", "marvelous", "masterful", "meaningful", "merit", "meritorious", "miraculous", "motivating", "moving", "natural", "nice", "novel", "now", "nurturing", "nutritious", "okay", "one", "one-hundred percent", "open", "optimistic", "paradise", "perfect", "phenomenal", "pleasurable", "plentiful", "pleasant", "poised", "polished", "popular", "positive", "powerful", "prepared", "pretty", "principled", "productive", "progress", "prominent", "protected", "proud", "quality", "quick", "quiet", "ready", "reassuring", "refined", "refreshing", "rejoice", "reliable", "remarkable", "resounding", "respected", "restored", "reward", "rewarding", "right", "robust", "safe", "satisfactory", "secure", "seemly", "simple", "skilled", "skillful", "smile", "soulful", "sparkling", "special", "spirited", "spiritual", "stirring", "stupendous", "stunning", "success", "successful", "sunny", "super", "superb", "supporting", "surprising", "terrific", "thorough", "thrilling", "thriving", "tops", "tranquil", "transforming", "transformative", "trusting", "truthful", "unreal", "unwavering", "up", "upbeat", "upright", "upstanding", "valued", "vibrant", "victorious", "victory", "vigorous", "virtuous", "vital", "vivacious", "wealthy", "welcome", "well", "whole", "wholesome", "willing", "wonderful", "wondrous", "worthy", "wow", "yes", "yummy", "zeal", "zealous"])
-negWords = set(["abysmal", "adverse", "alarming", "angry", "annoy", "anxious", "apathy", "appalling", "atrocious", "awful", "bad", "banal", "barbed", "belligerent", "bemoan", "beneath", "boring", "broken", "callous", "can't", "clumsy", "coarse", "cold", "cold-hearted", "collapse", "confused", "contradictory", "contrary", "corrosive", "corrupt", "crazy", "creepy", "criminal", "cruel", "cry", "cutting", "dead", "decaying", "damage", "damaging", "dastardly", "deplorable", "depressed", "deprived", "deformed", "deny", "despicable", "detrimental", "dirty", "disease", "disgusting", "disheveled", "dishonest", "dishonorable", "dismal", "distress", "don\'t", "dreadful", "dreary", "enraged", "eroding", "evil", "fail", "faulty", "fear", "feeble", "fight", "filthy", "foul", "frighten", "frightful", "gawky", "ghastly", "grave", "greed", "grim", "grimace", "gross", "grotesque", "gruesome", "guilty", "haggard", "hard", "hard-hearted", "harmful", "hate", "hideous", "homely", "horrendous", "horrible", "hostile", "hurt", "hurtful", "icky", "ignore", "ignorant", "immature", "imperfect", "impossible", "inane", "inelegant", "infernal", "injure", "injurious", "insane", "insidious", "insipid", "jealous", "junky", "lose", "lousy", "lumpy", "malicious", "mean", "menacing", "messy", "misshapen", "missing", "misunderstood", "moan", "moldy", "monstrous", "naive", "nasty", "naughty", "negate", "negative", "never", "no", "nobody", "nondescript", "nonsense", "not", "noxious", "objectionable", "odious", "offensive", "old", "oppressive", "pain", "perturb", "pessimistic", "petty", "plain", "poisonous", "poor", "prejudice", "questionable", "quirky", "quit", "reject", "renege", "repellant", "reptilian", "repulsive", "repugnant", "revenge", "revolting", "rocky", "rotten", "rude", "ruthless", "sad", "savage", "scare", "scary", "scream", "severe", "shoddy", "shocking", "sick", "sickening", "sinister", "slimy", "smelly", "sobbing", "sorry", "spiteful", "sticky", "stinky", "stormy", "stressful", "stuck", "stupid", "substandard", "suspect", "suspicious", "tense", "terrible", "terrifying", "threatening", "ugly", "undermine", "unfair", "unfavorable", "unhappy", "unhealthy", "unjust", "unlucky", "unpleasant", "upset", "unsatisfactory", "unsightly", "untoward", "unwanted", "unwelcome", "unwholesome", "unwieldy", "unwise", "upset", "vice", "vicious", "vile", "villainous", "vindictive", "wary", "weary", "wicked", "woeful", "worthless", "wound", "yell", "yucky", "zero"])
-
 live_users = ['vobornik', 'scottie', 'm13253', 'zootreeves', 'cpunks', 'stevenroose', 'hrabbach', 'SzymonPobiega', 'rdponticelli', 'jeremysawicki', 'soroush', 'Viceroy', 'monohydroxy', 'edam', 'apex-predator', 'ISibboI', 'Mazo', 'mb300sd', 'CodeShark', 'subSTRATA', 'wtogami', 'hemlockII', 'cozz', 'kunstmusik', 'da2ce7', 'goldbit89', 'maxime01', 'bitsofproof', 'maaku', 'medoix', 'lazyjay', 'andrasfuchs', 'painlord2k', 'bruiselee', 'fanquake', 'Rudd-O', 'nemysis', 'earthmeLon', 'KobuderaRoninShinobi', 'codler', 'lismore', 'unknwntrr', 'onlyjob', 'petertodd', 'whitslack', 'MrLei', 'msva', 'swills', 'Nerzahd', 'jonasschnelli', 'imzhuli', 'collapsedev', 'gongchengra', 'sje1', 'randy-waterhouse', 'AllThingsBitcoin', 'shripadk', 'patrickb1991', 'dvdkhlng', 'intelliot', 'joe999', 'soheil', 'oblongmeteor', 'skruger', 'TheBlueMatt', 'constantined', 'dooglio', 'Mezrin', 'sgaltsev', 'agravier', 'K1773R', 'theuni', 'speirs', 'Suffice', 'bitkevin', 'cosmarchy', 'paulogeyer', 'joshtriplett', 'jkaye2012', 'bitnews', 'shufps', 'Stemby', 'TheButterZone', 'sarchar', 'ryny24', 'Squeezle42', 'Cryddit', 'btclove', 'weex', 'wizkid057', 'nbelikov', 'jeffmendoza', 'SteveBell', 'BrogulT', 'medicinebottle', 'dyzz', 'ag346', 'pshep', 'badger200', 'sje397', 'r000n', 'lseror', 'grahama', 'gthiruva', 'orb', 'gwern', 'ryanxcharles', 'jgarzik', 'lzrloveyou', 'shahnah', 'dajohi', 'qubez', 'tcatm', 'lano1106', 'pstratem', 'cjdelisle', 'nvmd', 'dpkp', 'laanwj', 'idevk', 'molecular', 'crazikPL', 'dan-da', 'brandondahler', 'idiotsabound', 'SomeoneWeird', 'dertin', 'schildbach', 'jegz', 'ephraimb', 'huiju', 'kybl', 'gmaxwell', 'WilhelmGGW', 'grayleonard', 'jonls', 'luke-jr', 'wlch', 'andruby', 'kyledrake', 'awt', 'p308945', 'dsattler', 'meighti', 'vassilevsky', 'sheldonth', 'Tranz5', 'Agera-S', 'Schmollen', 'tstranex', 'jherrerob', 'BugAndNewsReporter', 'bitstocoins', 'ashleyholman', 'xmj', 'PRab', 'chevdor', 'fryx', 'lovedazi005', 'Michagogo', 'coblee', 'WyseNynja', 'SergioDemianLerner', 'woeisme', 'doublec', 'robbak', 'Sammey1995', 'keo', 'sipa', 'laxris', 'fcicq', 'old-c-coder', 'dishwara', 'jrmithdobbs', 'ktiedt', 'kuzetsa', 'alexpennace', 'gdvine', 'ThePiachu', 'BitBargain', 'paraipan', 'hughdavenport', 'raamdev', 'vinniefalco', 'super3', 'Subo1978', 'richardassar', '63', 'adavies42', 'daedalus', 'nu11gravity', 'DannyHamilton', 'FrankLo', 'rodjacksonx', 'M4v3R', 'dscotese', 'Krellan', 'fgeek', 'nikolajsheller', 'henu', 'BoltBlit', 'leo-bogert', 'propertunist', 'rofl0r', 'johndillon', 'simon-liu', 'deweydb', 'codeboost', 'hasib145', 'kzaher', 'kiaya', 'n1bor', 'xerohour', 'macd0g', 'casellas', 'konieczkow', 'dacoinminster', 'mumblerit', 'shesek', 'pentarh', 'imton', 'HostFat', 'nixoid', 'dooglus', 'pianist', 'pjbrito', 'simondlr', 'mikehearn', 'jemmons', 'NerdfighterSean', 'taras-kolodchyn', 'VirtualDestructor', 'njbartlett', 'raarts', 'DrHaribo', 'thebalaa', 'gateway', 'gruez', 'neilneyman', 'Diapolo', 'face', 'deed02392', 'shamoons', 'ntom', 'timsk', 'avl42', 'rebroad', 'darkhosis', 'gavinandresen', 'ghedipunk', 'gubatron', 'aceat64', 'prusnak', 'xelvet', 'runeksvendsen', 'pakt', 'Commissar0617', 'Enelar', 'erundook', 'dalrax', 'Kroese', 'toffoo', 'Chemisist', 'nilamdoc', 'phelixbtc', 'KaosMcRage']
-lexical_innovations = ['error', 'using', 'default', 'bitcoind', 'sending', 'first', 'used', 'amount', 'bit', 're', 'fee', 'though', 'create', 'set', 'test', 'list', 'done', 'name', 'able', 'reason', 'another', 'connections', 'ok', 'git', 'btc', 'changed', 'check', 'currently', 'discussion', 'around', 'try', 'include', 'c', 'encryption', 'merged', 'per', 'show', 'tried', 'text', 'log', 'tested', 'os', 'open', 'tx', 'going', 'next', 'etc', 'second', 'quite', 'move', 'help', 'anything', 'implementation', 'everything', 'nothing', 'ubuntu', 'calls', 'given', 'generated', 'mean', 'script', 'values', 'daemon', 'remove', 'additional', 'keypool', 'optional', 'wait', 'built', 'otherwise', 'datadir', 'comment', 'step', 'proper', 'settings', 'thinking', 'errors', 'decimal', 'expected', 'level', 'require', 'caddress', 'similar', 'priority', 'pre', 'place', 'accounts', 'database', 'difficulty', 'general', 'makefile', 'segfault', 'isnt', 'appear', 'missing', 'wrote', 'crashes', 'big', 'except', 'incoming', 'wxwidgets', 'load', 'ones', 'timeout', 'zero', 'db', 'changing', 'total', 'target', 'info', 'response', 'limit', 'argument', 'confirm', 'definitely', 'moving', 'become', 'including', 'outgoing', 'screen', 'rest', 'gdb', 'external', 'clean', 'assert', 'disabled', 'funds', 'gui', 'https', 'build', 'change', 'good', 'fixed', 'know', 'keep', 'thanks', 'directory', 'needs', 'source', 'different', 'never', 'looks', 've', 'thing', 'however', 'least', 'every', 'release', 'fixes', 'else', 'must', 'whole', 'uses', 'inside', 'enough', 'lot', 'merge', 'making', 'spent', 'important', 'txid', 'closed', 'cause', 'put', 'means', 'believe', 'allows', 'api', 'thus', 'comments', 'flag', 'latest', 'rescan', 'possibly', 'reproduce', 'looking', 'exactly', 'unless', 'control', 'assume', 'b', 'top', 'less', 'give', 'artforz', 'end', 'related', 'said', 'following', 'reading', 'copy', 'local', 'tell', 'ie', 'wo', 'getting', 'methods', 'debugging', 'plan', 'minutes', 'previous', 'compatibility', 'updated', 'usb', 'binary', 'separate', 'backup', 'path', 'single', 'standard', 'osx', 'say', 'easily', 'take', 'whether', 'prevent', 'money', 'clear', 'split', 'happens', 'us', 'debian', 'day', 'kind', 'high', 'documentation', 'suggest', 'longer', 'exist', 'location', 'moved', 'hi', 'tree', 'wx', 'care', 'fees', 'suppose', 'ive', 'f', 'likely', 'bugs', 'instructions', 'date', 'checks', 'guess', 'review', 'operation', 'mainline', 'hope', 'entry', 'arguments', 'prefer', 'eventually', 'talking', 'pay', 'others', 'memory', 'const', 'upnp', 'char', 'agree', 'point', 'commits', 'int', 'x', 'solution', 'github', 'exception', 'std', 'pool', 'translation', 'controller', 'sense', 'far', 'hash', 'sorry', 'program', 'removed', 'avoid', 'included', 'configuration', 'thebluematt', 'patches', 'includes', 'based', 'behavior', 'library', 'cant', 'inc', 'takes', 'mentioned', 'question', 'push', 'apple', 'leave', 'stack', 'setting', 'logic', 'fact', 'matt', 'upon', 'real', 'somewhere', 'style', 'low', 'suggestion', 'cpu', 'parse', 'according', 'state', 'bad', 'openssl', 'attack', 'logging', 'language', 'sort', 'crashed', 'various', 'cache', 'service', 'pass', 'yeah', 'failed', 'together', 'pair', 'left', 'define', 'host', 'capabilities', 'url', 'readable', 'attacks', 'recommended', 'native', 'loop', 'failure', 'miniupnpc', 'certain', 'receiver', 'gavinandresen', 'sipa', 'declared', 'pubkey', 'configure', 'convert', 'indeed', 'attacker', 'enabled', 'scripts', 'access', 'developer', 'programs', 'undefined', 'checking', 'dependency', 'worth', 'root', 'g', 'action', 'seconds', 'random', 'map', 'handling', 'dependencies', 'lower', 'unable', 'urls', 'starts', 'downloading', 'depth', 'void', 'taken', 'bits', 'mo', 'computer', 'fail', 'guys', 'mlock', 'psz', 'txn', 'defined', 'increase', 'apply', 'past', 'iterations', 'addition', 'global', 'cleanly', 'checked', 'rounds', 'gmaxwell', 'getwork', 'peers', 'verification', 'laanwj', 'scriptsig', 'isstandard', 'worse', 'opcodes', 'tor', 'separator', 'operations', 'tray', 'argue', 'maintainer', 'addrproxy', 'wl', 'setsecret', 'quit', 'offset', 'dbus', 'coinbaser', 'ckey', 'pnode', 'cnode', 'ms', 'argv', 'overview', 'socks', 'walletlock', 'argc', 'ntime', 'ret', 'bip', 'seeds', 'taskbar', 'catching', 'askfor', 'getdata', 'walletmodel', 'optionsmodel', 'green', 'optionsdialog', 'balancechanged', 'qeventloop', 'processeventsflag', 'qflags', 'rebroad', 'qmetaobject', 'orange', 'qobject', 'planned', 'caddrinfo', 'rich', 'tester', 'ntotalblocks', 'loadblock', 'createnewblock', 'leveldb', 'ultraprune', 'bitcoinpulltester', 'nfc', 'digest', 'codeshark', 'threadscriptcheck', 'connectbestblock', 'svg', 'cscriptcheck', 'wednesday', 'pfork', 'jonasschnelli', 'refund', 'theuni', 'michagogo', 'opencon', 'wtogami', 'agravier', 'paymentack', 'toffoo', 'rcc', 'coinjoin', 'mips', 'mavericks', 'thread', 'boost', 'go', 'process', 'always', 'ack', 'fine', 'original', 'compile', 'things', 'autotools', 'working', 'close', 'find', 'future', 'internal', 'problems', 'filesystem', 'startup', 'lock', 'outputs', 'coin', 'created', 'compiled', 'starting', 'jgarzik', 'understand', 'interface', 'couple', 'mingw', 'chance', 'builds', 'closing', 'displayed', 'great', 'anyone', 'label', 'binaries', 'particular', 'debug', 'structures', 'display', 'entire', 'days', 'let', 'correctly', 'bytes', 'bool', 'someone', 'inv', 'miner', 'mining', 'reply', 'rebase', 'pulled', 'versions', 'strings', 'requires', 'turned', 'blockchain', 'stop', 'seen', 'flags', 'written', 'static', 'known', 'ifdef', 'removing', 'writing', 'functions', 'accepted', 'fuseupnp', 'select', 'exists', 'rebased', 'master', 'large', 'tests', 'rev', 'escrow', 'slow', 'performance', 'intended', 'fails', 'unit', 'final', 'ever', 'fully', 'greater', 'length', 'scope', 'parsing', 'conflicts', 'object', 'jrmithdobbs', 'faster', 'coinbase', 'pools', 'ckeystore', 'cwallet', 'socket', 'pending', 'remain', 'optimized', 'ping', 'limiting', 'splash', 'tr', 'transifex', 'growl', 'pblock', 'shut', 'reflect', 'bitcoingui', 'cnetaddr', 'valgrind', 'resize', 'addrman', 'flushing', 'diapolo', 'upgradewallet', 'compact', 'detachdb', 'clang', 'ctxmempool', 'loops', 'dust', 'reindex', 'reindexing', 'qubez', 'ratio', 'petertodd', 'gib', 'disconnectblock', 'cvalidationstate', 'ccheckqueue', 'cozz', 'loadblockindexdb', 'addcon', 'dumpaddr', 'johndillon', 'msghand', 'isdust', 'subtree', 'logprint']
 
 
 def sort_comments():
@@ -59,7 +57,9 @@ def get_initial_seen_words(months_comments):
 	return seen_words
 		
 def get_lexical_innovations(comments, seen_words):
-	""" Finds lexical innovations. Lexical innovations are words that became popular by multiple users and were used more than 10 times within 6 months after first being introduced """
+	""" Finds lexical innovations. Lexical innovations are words that became popular
+	    by multiple users and were used more than 10 times within 6 months after
+	    first being introduced """
 	new_words = {}
 	innovations = []
 	time_period = datetime.timedelta(-180)
@@ -85,7 +85,6 @@ def get_lexical_innovations(comments, seen_words):
 				if len(v) > 10:   # more than 10 times
 					# word, user, year, month, number of times used
 					innovations.append([k, v[0][0], v[0][1].year, v[0][1].month, len(v)])
-					#print k + "\t" + v[0][0]  + "\t" + str(v[0][1].year)  + "\t" + str(v[0][1].month)  + "\t" + str(len(v))
 
 	return innovations
 
@@ -99,7 +98,6 @@ def analyze_innovators(innovations):
 			noncore_innovators.append(i[1])
 	#print Counter(core_innovators)
 	#print Counter(noncore_innovators)
-
 
 def get_users_comments(comments):
 	users_comments = {}
@@ -170,6 +168,7 @@ def get_vocab_frequency(comments, word_list):
 	#return [ sum(frequency25)/len(frequency25), sum(frequency50)/len(frequency50), sum(frequency75)/len(frequency75), sum(frequency100)/len(frequency25)]
 
 def get_user_lifespan(comments_sorted):
+	""" Finds users that are active in last 6 months """
 	user_life = {}
 	for i in comments_sorted:
 		if i[1] not in user_life:
@@ -179,37 +178,28 @@ def get_user_lifespan(comments_sorted):
 	
 	live_users = []
 	for k,v in user_life.items():
-		#print v[-1].year, v[-1].year >= 2013
 		if v[-1].year >= 2013 and v[-1].month >= 6:
 			live_users.append(k)
 	return live_users
 
 	#print type(user_life['gavinandresen'][0])
 
-## Find most frequent lexical innovators
-## flexibility of new comers
-## do new comers adopt innovations?
-
 
 comments_sorted = sort_comments()
 
-#months_comments =  get_months_comments(12, 2010, comments_sorted)
-#seen_words = get_initial_seen_words(months_comments)
-#innovations = get_lexical_innovations(comments_sorted, seen_words)
-#analyze_innovators(innovations)
+months_comments =  get_months_comments(12, 2010, comments_sorted)
+seen_words = get_initial_seen_words(months_comments)
+innovations = get_lexical_innovations(comments_sorted, seen_words)
+analyze_innovators(innovations)
 
 #print innovations
 
-#get_user_lifespan(comments_sorted)
-
 comments = get_users_comments(comments_sorted)
 
-
-get_vocab_frequency(comments, lexical_innovations)
-#get_vocab_frequency(comments, bitcoin_vocab)
-#get_vocab_frequency(comments, first_personal_pronouns)
-# get_vocab_frequency(comments, first_plural_pronouns)
-# get_vocab_frequency(comments, second_pronouns)
-# # get_vocab_frequency(comments, whQuestionWords)
-# get_vocab_frequency(comments, posWords)
-# get_vocab_frequency(comments, negWords)
+get_vocab_frequency(comments, bitcoin_vocab)
+get_vocab_frequency(comments, first_personal_pronouns)
+get_vocab_frequency(comments, first_plural_pronouns)
+get_vocab_frequency(comments, second_pronouns)
+get_vocab_frequency(comments, whQuestionWords)
+get_vocab_frequency(comments, posWords)
+get_vocab_frequency(comments, negWords)
