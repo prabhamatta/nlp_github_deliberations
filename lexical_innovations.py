@@ -90,14 +90,124 @@ def get_months_comments(month, year, comments_sorted):
 
 
 comments_sorted = sort_comments()
-months_comments =  get_months_comments(12,2010,comments_sorted)
-get_known_words(months_comments)
-get_lexical_innovations(comments_sorted, known_words)
+#months_comments =  get_months_comments(12,2010,comments_sorted)
+#get_known_words(months_comments)
+#get_lexical_innovations(comments_sorted, known_words)
 
 
 
-#print len(user_comments.keys())
-# There are 893 users with comments
+def get_users_comments(comments):
+	users_comments = {}
+	for post in comments:
+		user = post[1]
+		#date_time_obj = post[0]
+		comment = nltk.word_tokenize(post[2])
+		cleaned_comment = [word.lower().strip(string.punctuation) for word in comment if word not in string.punctuation]
+		if user not in users_comments:
+			users_comments[user] = [cleaned_comment]
+		elif user in users_comments:
+			users_comments[user].append(cleaned_comment)
+	return users_comments
+
+
+def get_vocab_frequency(comments, word_list):
+	frequency25 = []
+	frequency50 = []
+	frequency75 = []
+	frequency100= []
+	for user,comment_list in comments.items():
+		if user not in core_collabs:
+			interval =  int(round(float(len(comment_list))/4))
+			count = 0
+			for i in comment_list[0:interval]:
+				has_word = False
+				for word in word_list:
+					if word in i:
+						has_word = True
+				if has_word:
+					count += 1
+			if interval > 0:
+				frequency25.append(float(count)/interval)
+			count = 0
+			for i in comment_list[interval:interval*2]:
+				has_word = False
+				for word in word_list:
+					if word in i:
+						has_word = True
+				if has_word:
+					count += 1
+			if interval > 0:
+				frequency50.append(float(count)/interval)
+			count = 0
+			for i in comment_list[interval*2:interval*3]:
+				has_word = False
+				for word in word_list:
+					if word in i:
+						has_word = True
+				if has_word:
+					count += 1
+			if interval > 0:
+				frequency75.append(float(count)/interval)
+			count = 0
+			for i in comment_list[interval*3:]:
+				has_word = False
+				for word in word_list:
+					if word in i:
+						has_word = True
+				if has_word:
+					count += 1
+			if interval > 0:
+				frequency100.append(float(count)/interval)
+
+	print sum(frequency25)/len(frequency25)
+	print sum(frequency50)/len(frequency50)
+	print sum(frequency75)/len(frequency75)
+	print sum(frequency100)/len(frequency100)
+
+
+comments = get_users_comments(comments_sorted)
+
+# Break each persons comments up into 4 chunks. count number of bitcoin vocabulary in each of these chunks.
+# Get the length of the comments for comment ids that are 52 -->  0,12,25,51. Bins are 0-12, 13-25, 26-51
+
+
+bitcoin_vocab = ["bitcoins", "bitcoin", "block", "coin", "coins", "blocks", "chains", "chain", "btc", "confirmation", "cryptography", "crypto", "mining", "p2p", "signature", "wallet", "transaction", "xbt", "miner", "payment", "bitcoind", "transactions", "tumbler", "qt"]
+test_comments = comments['jrmithdobbs']
+core_collabs = ["gavinandresen", "gmaxwell", "jgarzik", "laanwj", "sipa", "tcatm"]
+
+
+
+get_vocab_frequency(comments, bitcoin_vocab)
+
+
+
+#for each user in the dict
+# calc what the interval should be
+# then count number of times word appears in that interval in a comment.
+
+# interval =  int(round(float(len(test_comments))/4))
+# count = []
+# for comment in test_comments[0:interval]:
+# 	bitcoin = [x for x in comment if x in bitcoin_vocab]
+# 	count.append(len(bitcoin))
+# print sum(count)/interval
+# count = []
+# for comment in test_comments[interval:interval*2]:
+# 	bitcoin = [x for x in comment if x in bitcoin_vocab]
+# 	count.append(len(bitcoin))
+# count = []
+# print sum(count)/interval
+# for comment in test_comments[interval*2:interval*3]:
+# 	bitcoin = [x for x in comment if x in bitcoin_vocab]
+# 	count.append(len(bitcoin))
+# count = []
+# print sum(count)
+# for comment in test_comments[interval*3:]:
+# 	bitcoin = [x for x in comment if x in bitcoin_vocab]
+# 	count.append(len(bitcoin))
+# print sum(count)
+
+
 
 # for k,v in user_comments.items():
 # 	for i in v:
@@ -111,7 +221,6 @@ get_lexical_innovations(comments_sorted, known_words)
 # whQuestionWords = ['who','what','when','where','why', 'how']
 # posWords = set(["absolutely", "adorable", "accepted", "acclaimed", "accomplish", "accomplishment", "achievement", "action", "active", "admire", "adventure", "affirmative", "affluent", "agree", "agreeable", "amazing", "angelic", "appealing", "approve", "aptitude", "attractive", "awesome", "beaming", "beautiful", "believe", "beneficial", "bliss", "bountiful", "bounty", "brave", "bravo", "brilliant", "bubbly", "calm", "celebrated", "certain", "champ", "champion", "charming", "cheery", "choice", "classic", "classical", "clean", "commend", "composed", "congratulation", "constant", "cool", "courageous", "creative", "cute", "dazzling", "delight", "delightful", "distinguished", "divine", "earnest", "easy", "ecstatic", "effective", "effervescent", "efficient", "effortless", "electrifying", "elegant", "enchanting", "encouraging", "endorsed", "energetic", "energized", "engaging", "enthusiastic", "essential", "esteemed", "ethical", "excellent", "exciting", "exquisite", "fabulous", "fair", "familiar", "famous", "fantastic", "favorable", "fetching", "fine", "fitting", "flourishing", "fortunate", "free", "fresh", "friendly", "fun", "funny", "generous", "genius", "genuine", "giving", "glamorous", "glowing", "good", "gorgeous", "graceful", "great", "green", "grin", "growing", "handsome", "happy", "harmonious", "healing", "healthy", "hearty", "heavenly", "honest", "honorable", "honored", "hug", "idea", "ideal", "imaginative", "imagine", "impressive", "independent", "innovate", "innovative", "instant", "instantaneous", "instinctive", "intuitive", "intellectual", "intelligent", "inventive", "jovial", "joy", "jubilant", "keen", "kind", "knowing", "knowledgeable", "laugh", "legendary", "light", "learned", "lively", "lovely", "lucid", "lucky", "luminous", "marvelous", "masterful", "meaningful", "merit", "meritorious", "miraculous", "motivating", "moving", "natural", "nice", "novel", "now", "nurturing", "nutritious", "okay", "one", "one-hundred percent", "open", "optimistic", "paradise", "perfect", "phenomenal", "pleasurable", "plentiful", "pleasant", "poised", "polished", "popular", "positive", "powerful", "prepared", "pretty", "principled", "productive", "progress", "prominent", "protected", "proud", "quality", "quick", "quiet", "ready", "reassuring", "refined", "refreshing", "rejoice", "reliable", "remarkable", "resounding", "respected", "restored", "reward", "rewarding", "right", "robust", "safe", "satisfactory", "secure", "seemly", "simple", "skilled", "skillful", "smile", "soulful", "sparkling", "special", "spirited", "spiritual", "stirring", "stupendous", "stunning", "success", "successful", "sunny", "super", "superb", "supporting", "surprising", "terrific", "thorough", "thrilling", "thriving", "tops", "tranquil", "transforming", "transformative", "trusting", "truthful", "unreal", "unwavering", "up", "upbeat", "upright", "upstanding", "valued", "vibrant", "victorious", "victory", "vigorous", "virtuous", "vital", "vivacious", "wealthy", "welcome", "well", "whole", "wholesome", "willing", "wonderful", "wondrous", "worthy", "wow", "yes", "yummy", "zeal", "zealous"])
 # negWords = set(["abysmal", "adverse", "alarming", "angry", "annoy", "anxious", "apathy", "appalling", "atrocious", "awful", "bad", "banal", "barbed", "belligerent", "bemoan", "beneath", "boring", "broken", "callous", "can't", "clumsy", "coarse", "cold", "cold-hearted", "collapse", "confused", "contradictory", "contrary", "corrosive", "corrupt", "crazy", "creepy", "criminal", "cruel", "cry", "cutting", "dead", "decaying", "damage", "damaging", "dastardly", "deplorable", "depressed", "deprived", "deformed", "deny", "despicable", "detrimental", "dirty", "disease", "disgusting", "disheveled", "dishonest", "dishonorable", "dismal", "distress", "don\'t", "dreadful", "dreary", "enraged", "eroding", "evil", "fail", "faulty", "fear", "feeble", "fight", "filthy", "foul", "frighten", "frightful", "gawky", "ghastly", "grave", "greed", "grim", "grimace", "gross", "grotesque", "gruesome", "guilty", "haggard", "hard", "hard-hearted", "harmful", "hate", "hideous", "homely", "horrendous", "horrible", "hostile", "hurt", "hurtful", "icky", "ignore", "ignorant", "immature", "imperfect", "impossible", "inane", "inelegant", "infernal", "injure", "injurious", "insane", "insidious", "insipid", "jealous", "junky", "lose", "lousy", "lumpy", "malicious", "mean", "menacing", "messy", "misshapen", "missing", "misunderstood", "moan", "moldy", "monstrous", "naive", "nasty", "naughty", "negate", "negative", "never", "no", "nobody", "nondescript", "nonsense", "not", "noxious", "objectionable", "odious", "offensive", "old", "oppressive", "pain", "perturb", "pessimistic", "petty", "plain", "poisonous", "poor", "prejudice", "questionable", "quirky", "quit", "reject", "renege", "repellant", "reptilian", "repulsive", "repugnant", "revenge", "revolting", "rocky", "rotten", "rude", "ruthless", "sad", "savage", "scare", "scary", "scream", "severe", "shoddy", "shocking", "sick", "sickening", "sinister", "slimy", "smelly", "sobbing", "sorry", "spiteful", "sticky", "stinky", "stormy", "stressful", "stuck", "stupid", "substandard", "suspect", "suspicious", "tense", "terrible", "terrifying", "threatening", "ugly", "undermine", "unfair", "unfavorable", "unhappy", "unhealthy", "unjust", "unlucky", "unpleasant", "upset", "unsatisfactory", "unsightly", "untoward", "unwanted", "unwelcome", "unwholesome", "unwieldy", "unwise", "upset", "vice", "vicious", "vile", "villainous", "vindictive", "wary", "weary", "wicked", "woeful", "worthless", "wound", "yell", "yucky", "zero"])
-# acro = ["ack"]
 
 
 
@@ -147,35 +256,3 @@ get_lexical_innovations(comments_sorted, known_words)
 
 # for i in range(0,len(sums)):
 # 	print float(sums[i]) / len(results)
-
-
-
-# #### First 50 comments ###
-# results = []
-# for user, comment_list in user_comments.items():
-# 	pronoun_cnt = 0
-# 	if user in core_collabs:
-# 		if len(comment_list) >= 50:
-# 			for i in range(0,50):
-# 				if i > 0 and i % 10 == 0:
-# 					pronoun_cnt = 0
-# 				has_pronoun = False
-# 				comment_text = nltk.word_tokenize(comment_list[i].lower())
-# 				for n, word in enumerate(comment_text):
-# 					if n <= 30:
-# 						if word in bitcoin_vocab:
-# 							has_pronoun = True
-# 				if has_pronoun:
-# 					pronoun_cnt += 1
-# 				if i > 0 and i % 10 == 9:
-# 					results.append(pronoun_cnt)
-
-# sums = [0]*5
-
-# for i in range(0,len(results)):
-# 	for j in range(0,5):
-# 		if i % 5 == j:
-# 			sums[j] += results[i]
-
-# for i in range(0,len(sums)):
-#   print float(sums[i]) / (len(results)/len(sums)*10)
