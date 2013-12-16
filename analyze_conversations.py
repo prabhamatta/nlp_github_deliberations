@@ -8,7 +8,22 @@ from pprint import pprint
 import nltk
 import string
 import json
+"""
+This file does the following (Please see the report for more detailed description):
 
+1. Newcomers and Existing community Comments analysis
+
+To analyze this I segregated all the users comments into 2 groups - first 1/3rd of the comments as Newcomers comments and all the comments of the users as Community comments.  We require only the users who have enough comments that we see if there is any change in their linguistic style.  For this, I considered 43 users who have at least 30 comments. 
+
+2. Project stats of Bitcoin Github project
+
+3. get fequency distribution of users comments activity in in pull/issue converstaions 
+
+
+4. Feature analysis of Core and Non-core users
+There are 6 core collaborators - gavinandresen, gmaxwell, jgarzik, laanwj, sipa, tcatm. I compared how core users differed from non-core users in their comments. 
+
+"""
 '''----------------------Stats regarding top mentioned users, core users, etc---------------------'''        
 def clean_user(user):
     if user[-1] in string.punctuation:
@@ -18,7 +33,7 @@ def clean_user(user):
     return user
 
 def get_top_users_comments():
-    """ get top users comment num in pull/issue converstaions"""
+    """ get fequency distribution of users comments in pull/issue converstaions"""
     
     files_tag = ["issues"]
     for tag in files_tag:
