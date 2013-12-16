@@ -1,4 +1,5 @@
 __author__ = 'prabha'
+__Project__= 'GitHub Deliberations Comment Analysis Module'
 
 import sys
 import re,codecs,string
