@@ -1,4 +1,4 @@
-__author__ = 'github_deliberations'
+__author__ = 'prabha'
 
 import sys
 import re,codecs,string
@@ -16,39 +16,6 @@ def clean_user(user):
     if user[-2:] == "\'s":
         user = user[:-2]    
     return user
-
-def get_top_mentioned_users(mention_conversations):
-    """    
-       get_top_mentioned_users(mention_conversations)
-    """    
-    mentioned_users_list =[]
-    for line in mention_conversations:
-        line_split = line.strip().split("\t")
-        date = time.strptime(line_split[2][:10], "%Y-%m-%d")
-        user = line_split[4]
-        mentioned_user = clean_user(line_split[5].lower())
-        comment = line_split[6]
-        mentioned_users_list.append(mentioned_user)
-    fq = nltk.FreqDist(mentioned_users_list)
-    for k,v in fq.items():
-        print str(k)+"\t"+str(v)
-        
-def get_mentioned_by_core(mention_conversations, core):
-    """
-    get users mentioned by  core colloborators
-    """     
-    mentioned_users_list =[]
-    for line in mention_conversations:
-        line_split = line.strip().split("\t")
-        user = clean_user(line_split[4].lower())
-        if user in core:
-            mentioned_user = clean_user(line_split[5].lower())
-            mentioned_users_list.append(mentioned_user)
-    fq = nltk.FreqDist(mentioned_users_list)
-    for k,v in fq.items():
-        print str(k)+"\t"+str(v)
-
-
 
 def get_top_users_comments():
     """ get top users comment num in pull/issue converstaions"""
@@ -68,8 +35,6 @@ def get_top_users_comments():
             print str(k)
         f_write.close()                
                 
-
-
 
 '''-----------------------features for analyzing new and all----------------------'''
     
@@ -292,17 +257,17 @@ def newcomers_all_stats(users_comments):
     f_write.close()
     
     
-#def project_stats(users_comments):
+def project_stats(users_comments):
   
-    #"""............project stats........"""
-    #all_comments, newcomer_comments = get_newcomer_and_all_comments(users_comments)    
-    #print "Num of Contributors = 153",
-    #print "Num of Commentators = ",len(users_comments.keys())
-    #print "Num of Comments = ",len(all_comments)  
-    #print "Users with more than 50 Comments =", len([user for user,comments in users_comments.items() if len(comments)>50])
+    """............project stats........"""
+    all_comments, newcomer_comments = get_newcomer_and_all_comments(users_comments)    
+    print "Num of Contributors = 153",
+    print "Num of Commentators = ",len(users_comments.keys())
+    print "Num of Comments = ",len(all_comments)  
+    print "Users with more than 50 Comments =", len([user for user,comments in users_comments.items() if len(comments)>50])
     
-    #print "Average num of words per Comments =", getWordsPerComment(all_comments)
-    #print "Average num of sentences per Comments =", getSentPerComment(all_comments)    
+    print "Average num of words per Comments =", getWordsPerComment(all_comments)
+    print "Average num of sentences per Comments =", getSentPerComment(all_comments)    
 
 
 def core_diapolo_noncore_stats(users_comments):
@@ -449,8 +414,7 @@ def main():
 
 if __name__ == '__main__':
  
-    main()
+    #main()
     #read_jsons()
     #get_top_users_comments()
-
-    
+  
