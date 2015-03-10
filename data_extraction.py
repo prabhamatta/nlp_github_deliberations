@@ -19,7 +19,7 @@ This file does the following (Please see the report for more detailed descriptio
 """
 
 ISO8601 = "%Y-%m-%dT %H:%M:%SZ"
-github_token = "e072092b2d381eb6e828f954a2b75a6c148fc57a"
+github_token = "" #give github token here
 
 
 
